@@ -1,0 +1,7 @@
+name = Extended File Field Taxonomy
+description = Allows Extended File Field module to display taxonomy terms.
+core = 7.x
+php = 5.3
+package = Fields
+dependencies[] = extended_file_field
+dependencies[] = taxonomy

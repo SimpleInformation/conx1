@@ -1,0 +1,11 @@
+<?php
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function cnx_group_messaging_form_alter(&$form, &$form_state, $form_id) {
+  if($form_id == "og_email_blast_group") {
+    $form['message']['#type'] = 'text_format';
+  }
+}

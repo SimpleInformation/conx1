@@ -1,0 +1,404 @@
+@charset "UTF-8";
+
+@import "reset.css";
+
+html {
+	font-size: 62.5%;
+}
+body {
+	background: #78787a;
+	font-family: 'Merriweather', serif;
+	font-weight: 300;
+	font-size: 11px;
+	font-size: 1.1rem;
+	color: #000;
+}
+a:link, a:visited {
+	color: #f18b21;
+	text-decoration: underline;
+	font-weight: bold;
+}
+h1, h2, h3 {
+	color: #f18b21;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 700;
+	/*text-transform: uppercase;*/
+	font-size: 18px;
+	font-size: 1.8rem;
+}
+h2 {
+	font-size: 17px;
+	font-size: 1.7rem;
+	text-transform: capitalize;
+}
+h3 {
+	font-size 15px;
+	font-size: 1.5rem;
+}
+hr {
+	width: 100%;
+	background-color: #78787a;	
+	color: #78787a;	
+	height: 3px;
+	border: 0;
+	text-align: center;
+}
+strong {
+	font-weight: bold;
+}
+.main {
+	background: #fff;
+	padding: 50px 0 25px;
+}
+.header {
+	padding-bottom: 25px;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+.headR {
+	text-align: right;
+	font-size:12px;
+	font-size 1.2rem;
+}
+/* getting rid of Drupal defaults */
+ul li.leaf {
+    list-style-image: none;
+    list-style-type: none;
+}
+li.expanded, li.collapsed, li.leaf {
+    margin: 0;
+    padding: 0;
+}
+ul li.expanded {
+    list-style-image: none;
+    list-style-type: none;
+}
+ul li.collapsed {
+    list-style-image: none;
+    list-style-type: none;
+}
+ul.menu li {
+    margin: 0;
+}
+/* end */
+
+.login ul{
+	list-style-type: none;
+	padding-top: 0;
+	padding-bottom: 20px;
+}
+.login ul a, .login ul a:visited {
+	text-decoration: none;
+	color: #78787a;	
+}
+.login ul li a:hover, .login ul li a:active, .login ul li a:focus {
+	color: #f18b21;
+}
+#main-nav {
+	padding-top: 20px;
+	float: right;
+}
+#main-nav ul {
+	list-style-type: none;
+	float: right;
+	width: 100%;
+}
+#main-nav .login ul {
+	width: auto;
+}
+#main-nav li {
+	float: left;
+}
+#main-nav a, #main-nav a:visited {
+	display: block;
+	padding-left: 20px;
+	padding-bottom: 5px;
+	text-decoration: none;
+	color: #78787a;	
+}
+#main-nav li a:hover, #main-nav li a:active, #main-nav li a:focus {
+	color: #f18b21;
+}
+#main-nav li:hover, #main-nav li.hover {
+    position: static;
+}
+#main-nav li ul {
+	position: absolute;
+	width: 140px;
+	left: -999em;
+	z-index: 1000;
+}
+#main-nav li ul li a, #main-nav li ul li a:visited {
+	width: 140px;
+	background-color: #fff;
+	text-align: left;
+	padding: 10px 12px;	
+	border: 1px solid #78787a;	
+	border-width: 1px 1px 0 1px;
+}
+#main-nav li ul li.last a, #main-nav li ul li.last a:visited {
+	border-bottom: 1px solid #78787a;
+}
+	
+#main-nav li:hover ul, #main-nav li.sfhover ul  {
+	left: auto;
+}
+
+/* homepage styles */
+.highlight {
+	font-size: 19px;
+	font-size: 1.9rem;
+	line-height: 2em;
+	font-weight: 300;s
+}
+span.hilite {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 700;
+	font-size: 23px;
+	font-size: 2.3rem;
+	color: #f18b21;
+}
+.buttons p {
+	background: #f29637; /* Old browsers */
+	background: -moz-linear-gradient(left,  #f29637 0%, #ffca43 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#f29637), color-stop(100%,#ffca43)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left,  #f29637 0%,#ffca43 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left,  #f29637 0%,#ffca43 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left,  #f29637 0%,#ffca43 100%); /* IE10+ */
+	background: linear-gradient(to right,  #f29637 0%,#ffca43 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f29637', endColorstr='#ffca43',GradientType=1 ); /* IE6-9 */
+	padding: 30px 0;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 700;
+	font-size: 15px;
+	font-size: 1.5rem;
+	text-align: center;
+	color: #fff;
+}
+.buttons p a, .buttons p a:visited {
+	color: #fff;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+.follow {
+	margin-top: 15px;
+	border: 2px solid #d1d1d2;
+	border-width: 2px 0;
+	padding: 20px 0;
+}
+.follow h3 {
+	color: #78787a;
+	padding-left: 10px;
+}
+.follow p {
+	margin: 0;
+}
+.follow img {
+	padding: 10px 7px 0 0;
+}
+/* end homepage styles */
+
+/* interior pages */
+.call-out p {
+	font-size: 23px;
+	font-size: 2.3rem;
+	line-height: 2em;
+	font-weight: 300;
+	padding-bottom: 40px;
+	border-bottom: 3px solid #78787a;
+}
+.call-out p img {
+	padding: 5px 0 0 10px;
+}
+/* subnav */
+.menu-level-2 {
+	padding: 15px 0 5px;
+}
+.menu-level-2 ul {
+	list-style-type: none;
+}
+.menu-level-2 ul a, .menu-level-2 ul a:visited {
+	display: block;
+    background: #fff;
+    color: #78787a;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 700;
+	fontsize: 17px;
+	font-size: 1.7rem;
+	border: 1px solid #d1d1d2;
+	border-width: 2px 0;
+	padding: 10px 0 10px 10px;
+	text-decoration: none;
+	margin-bottom: 5px;
+}
+.menu-level-2 ul a:hover, .menu-level-2 ul a.active {
+    background: #fff;
+    color: #78787a;
+}
+.menu-level-2 ul ul li a {
+	border: none;
+	display: block;
+	font-weight: 400;
+	font-size: 14px;
+	font-size: 1.4rem;
+	padding: 7px 0 7px 10px;
+}
+.menu-level-2 ul ul a:hover, .menu-level-2 ul ul a:focus, .menu-level-2 ul ul a.active {
+    color: #f18b21;
+}
+.main-content {
+	font-size: 14px;
+	font-size: 1.4rem;
+	line-height: 2em;
+}
+.main-content ul {
+	list-style-type: disc;
+}
+
+/* footer */
+.footer {
+	background: #e4e4e4;
+	color: #78787a;
+	padding: 25px 0 10px;
+	font-size: 13px;
+	font-size: 1.3rem;
+	line-height: 1.8em;
+}
+.copy {
+	padding-top: 75px;
+	text-align: right;
+}
+
+/* Drupal tabs */
+ul.primary {
+    padding: 0;
+}
+ul.primary li a {
+    margin-right: 0.25em;
+    padding: 0 .5em;
+}
+
+/* strategic plan table */
+table.strategic-plan {
+	font-size: 15px;
+	font-size: 1.5rem;
+}
+td {
+	padding: 15px 10px;
+	border-bottom: 1px solid #ccc;
+}
+tr:first-child td {
+	border-bottom: 2px solid #ccc;	
+}
+table.strategic-plan tr td:first-child {
+	color: #80a1a2;
+}
+td.one {
+	width: 25%;
+}
+tr.even, tr.odd {
+    background-color: #fff;
+}
+td.active {
+    background-color: #fff;
+}
+/* end */
+.views-table.cols-4 td {
+	vertical-align: middle;
+}
+
+/* book resources */
+.resources ul li {
+	padding: 0 0 10px;
+}
+.resources ul li ul {
+	margin-left: 20px;
+}
+
+/* flexible images */
+img, object {
+	max-width: 100%;
+	height: auto;
+}
+
+@media 
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr { 
+		display: block; 
+	}
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}	
+	tr { 
+		border: 1px solid #ccc; 
+	}
+	
+	td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #ccc; 
+		position: relative;
+		padding-left: 50%; 
+	}
+	td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 15px;
+		left: 10px;
+		width: 45%; 
+		padding-right: 10px; 
+		white-space: nowrap;
+	}
+}
+/* tablets */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+}
+
+/* Mobile Portrait Size and Mobile Landscape Size (devices and browsers) */
+@media only screen and (min-width: 320px) and (max-width: 767px) {
+	.headL img {
+		width: 300px;
+		height: auto;
+	}
+	#main-nav {
+		float: none;
+		padding-top: 0;
+	}
+	.login ul {
+		padding-bottom: 0;
+	}
+	#main-nav ul {
+		float: none;
+		text-algn: center;
+		display: block;
+	}	
+	#main-nav ul.menu a {
+		margin: 0 auto;
+   		padding: 10px 0;
+	}
+	#main-nav li {
+		float: none;
+		display: block;
+		width: 100%;
+		text-align: center;
+		background: #f18b21;
+	}
+	#main-nav li a, #main-nav li a:visited {
+		color: #fff;
+	}
+	#main-nav li a:hover, #main-nav li a:focus {
+		color: #f18b21;
+		background: #fff;
+	}
+	#main-nav li li a, #main-nav li li a:visited {
+		color: #000;
+	}
+}

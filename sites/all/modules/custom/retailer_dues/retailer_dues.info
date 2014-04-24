@@ -1,0 +1,8 @@
+name = Retailer Dues
+description = Retailer Dues Calculation
+core = 7.x
+
+dependencies[] = entityform_calculator
+dependencies[] = basedues
+
+package = Entityforms

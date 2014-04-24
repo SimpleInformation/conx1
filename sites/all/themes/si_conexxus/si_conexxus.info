@@ -1,0 +1,38 @@
+name = SI Conexxus theme
+description = Simple Information Theme for Conexxus<a href="http://www.simpleinformation.com/" target="_blank"> Simple Information</a>.
+version = VERSION
+core = 7.x
+
+stylesheets[all][] = css/skeleton.css
+stylesheets[all][] = css/conexxus.css
+
+scripts[] = js/menu.js
+scripts[] = js/jquery.mobilemenu.js
+
+regions[header_right] = Header right
+
+regions[hp_banner] = Hp banner
+regions[hp_left] = Hp left
+regions[hp_midtop] = Hp mid top
+regions[hp_righttop] = Hp right top
+regions[hp_midbot] = Hp mid bot
+regions[hp_rightbot] = Hp right bot
+regions[hp_content] = Hp content
+
+regions[banner] = Banner
+regions[content] = Content
+regions[sidebar_left] = Sidebar left
+regions[sidebar_right] = Sidebar right
+
+regions[footer_left] = Footer left
+regions[footer_right] = Footer right
+
+regions[help] = Help
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+
+settings[responsive_menu_state]= 1
+settings[responsive_menu_switchwidth]='760'
+settings[responsive_menu_topoptiontext]= 'Select a page'
+
+

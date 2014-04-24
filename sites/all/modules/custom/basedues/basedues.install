@@ -1,0 +1,38 @@
+<?php
+/**
+ * Implements hook_field_schema().
+ */
+function basedues_field_schema($field) {
+  return array(
+    'columns' => array(
+      'basedues' => array(
+        'type' => 'numeric',
+        'not null' => TRUE,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_install().
+ */
+function basedues_install() {
+  variable_set('lowest_total_sales_limit',6000000);
+  variable_set('lowest_basic_dues',800);
+  variable_set('second_tier_upper_limit',30000000);
+  variable_set('third_tier_upper_limit',90000000);
+  variable_set('third_tier_base_value',1100);
+  variable_set('fourth_tier_base_value',1820);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function basedues_uninstall() {
+  variable_del('lowest_total_sales_limit');
+  variable_del('lowest_basic_dues');
+  variable_del('second_tier_upper_limit');
+  variable_del('third_tier_upper_limit');
+  variable_del('third_tier_base_value');
+  variable_del('fourth_tier_base_value');
+}

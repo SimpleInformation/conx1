@@ -1,0 +1,38 @@
+***************
+*** 79,91 ****
+        }
+        // Adding the nodes body by theme_terms_of_use() to the fieldset if desired.
+        if ($show_terms) {
+-         if ($terms = $node->body[$node->language][0]['safe_value']) {
+-           $form['#attached']['css'] = array(
+-             drupal_get_path('module', 'terms_of_use') . '/terms_of_use.css'
+-           );
+-           $form['terms_of_use']['terms_of_use_text'] = array(
+-             '#markup' => theme('terms_of_use', array('terms' => $terms, 'node' => $node)),
+-           );
+          }
+          else {
+            watchdog('terms_of_use', 'The body field of the terms of use node was empty. Please check the the nodes content.', array(), WATCHDOG_ALERT, l('Administer terms of use', 'admin/config/people/terms_of_use'));
+--- 118,139 ----
+        }
+        // Adding the nodes body by theme_terms_of_use() to the fieldset if desired.
+        if ($show_terms) {
++         if ($terms = $node->body[$node->language][0]['value']) {
++ 
++           if (!$LOGIN_BLOCK) {
++             $form['#attached']['css'] = array(
++               drupal_get_path('module', 'terms_of_use') . '/terms_of_use.css'
++             );
++             $form['terms_of_use']['terms_of_use_text'] = array(
++               '#markup' => theme('terms_of_use', array('terms' => $terms, 'node' => $node)),
++             );
++           }
++           // Login block formatting.
++           else {
++             $form['terms_of_use']['terms_of_use_link'] = array(
++               '#markup' => l($fieldset_name, 'node/' . $node->nid),
++             );
++           }
+          }
+          else {
+            watchdog('terms_of_use', 'The body field of the terms of use node was empty. Please check the the nodes content.', array(), WATCHDOG_ALERT, l('Administer terms of use', 'admin/config/people/terms_of_use'));

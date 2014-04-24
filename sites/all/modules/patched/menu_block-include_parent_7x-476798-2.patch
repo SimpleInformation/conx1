@@ -1,0 +1,218 @@
+From bd757b3e9c530c2d376c66dd6f257203a96c8090 Mon Sep 17 00:00:00 2001
+From: othermachines <ldevitt@othermachines.com>
+Date: Thu, 3 Apr 2014 09:54:00 -0600
+Subject: [PATCH] Issue #476798 by Ronino, othermachines, caschbre: Added new
+ configuration option 'include_parent'.
+
+---
+ menu_block.admin.inc |  7 +++++
+ menu_block.api.php   | 32 ++++++++++++-----------
+ menu_block.module    | 72 ++++++++++++++++++++++++++++++++++------------------
+ 3 files changed, 72 insertions(+), 39 deletions(-)
+
+diff --git a/menu_block.admin.inc b/menu_block.admin.inc
+index 992a0cc..332cc4c 100644
+--- a/menu_block.admin.inc
++++ b/menu_block.admin.inc
+@@ -363,6 +363,12 @@ function menu_block_configure_form($form, &$form_state) {
+     ),
+     '#description' => t('Blocks that start with the 1st level will always be visible. Blocks that start with the 2nd level or deeper will only be visible when the trail to the active menu item passes though the block’s starting level.'),
+   );
++  $form['include_parent'] = array(
++    '#type' => 'checkbox',
++    '#title'  => t('Include parent'),
++    '#default_value'  => $config['include_parent'],
++    '#description'  => t('Should this block include the parent as the starting level? The parent is not included if it was the only item in the menu.'),
++  );
+   // The value of "follow" in the database/config array is either FALSE or the
+   // value of the "follow_parent" form element.
+   if ($follow = $config['follow']) {
+@@ -482,6 +488,7 @@ function _menu_block_block_save($delta = '', $edit = array()) {
+       variable_set("menu_block_{$delta}_title_link", $edit['title_link']);
+       variable_set("menu_block_{$delta}_admin_title", $edit['admin_title']);
+       variable_set("menu_block_{$delta}_parent", $edit['parent']);
++      variable_set("menu_block_{$delta}_include_parent", $edit['include_parent']);
+       variable_set("menu_block_{$delta}_level", $edit['level']);
+       variable_set("menu_block_{$delta}_follow", $edit['follow']);
+       variable_set("menu_block_{$delta}_depth", $edit['depth']);
+diff --git a/menu_block.api.php b/menu_block.api.php
+index 3d7a4c9..f41f476 100644
+--- a/menu_block.api.php
++++ b/menu_block.api.php
+@@ -33,24 +33,26 @@ function hook_menu_block_blocks() {
+     // The array key is the block id used by menu block.
+     'custom-nav' => array(
+       // Use the array keys/values described in menu_tree_build().
+-      'menu_name'   => 'primary-links',
+-      'parent_mlid' => 0,
+-      'title_link'  => FALSE,
+-      'admin_title' => 'Drop-down navigation',
+-      'level'       => 1,
+-      'follow'      => 0,
+-      'depth'       => 2,
+-      'expanded'    => TRUE,
+-      'sort'        => FALSE,
++      'menu_name'       => 'primary-links',
++      'parent_mlid'     => 0,
++      'title_link'      => FALSE,
++      'admin_title'     => 'Drop-down navigation',
++      'include_parent'  => 0,
++      'level'           => 1,
++      'follow'          => 0,
++      'depth'           => 2,
++      'expanded'        => TRUE,
++      'sort'            => FALSE,
+     ),
+     // To prevent clobbering of the block id, it is recommended to prefix it
+     // with the module name.
+-    'custom-active' => array(
+-      'menu_name'   => MENU_TREE__CURRENT_PAGE_MENU,
+-      'title_link'  => TRUE,
+-      'admin_title' => 'Secondary navigation',
+-      'level'       => 3,
+-      'depth'       => 3,
++    'custom-active'     => array(
++      'menu_name'       => MENU_TREE__CURRENT_PAGE_MENU,
++      'title_link'      => TRUE,
++      'admin_title'     => 'Secondary navigation',
++      'include_parent'  => 0,
++      'level'           => 3,
++      'depth'           => 3,
+       // Any config options not specified will get the default value.
+     ),
+   );
+diff --git a/menu_block.module b/menu_block.module
+index 89c26d5..e3af863 100644
+--- a/menu_block.module
++++ b/menu_block.module
+@@ -199,17 +199,18 @@ function menu_block_get_all_menus() {
+  */
+ function menu_block_get_config($delta = NULL) {
+   $config = array(
+-    'delta'       => $delta,
+-    'menu_name'   => 'main-menu',
+-    'parent_mlid' => 0,
+-    'parent'      => '',
+-    'title_link'  => 0,
+-    'admin_title' => '',
+-    'level'       => 1,
+-    'follow'      => 0,
+-    'depth'       => 0,
+-    'expanded'    => 0,
+-    'sort'        => 0,
++    'delta'          => $delta,
++    'menu_name'      => 'main-menu',
++    'parent_mlid'    => 0,
++    'parent'         => '',
++    'title_link'     => 0,
++    'admin_title'    => '',
++    'include_parent' => 0,
++    'level'          => 1,
++    'follow'         => 0,
++    'depth'          => 0,
++    'expanded'       => 0,
++    'sort'           => 0,
+   );
+
+   // Get the block configuration options.
+@@ -227,14 +228,15 @@ function menu_block_get_config($delta = NULL) {
+       $config['exported_to_code'] = TRUE;
+     }
+
+-    $config['title_link']  = variable_get("menu_block_{$delta}_title_link",  $config['title_link']);
+-    $config['admin_title'] = variable_get("menu_block_{$delta}_admin_title", $config['admin_title']);
+-    $config['level']       = variable_get("menu_block_{$delta}_level",       $config['level']);
+-    $config['follow']      = variable_get("menu_block_{$delta}_follow",      $config['follow']);
+-    $config['depth']       = variable_get("menu_block_{$delta}_depth",       $config['depth']);
+-    $config['expanded']    = variable_get("menu_block_{$delta}_expanded",    $config['expanded']);
+-    $config['sort']        = variable_get("menu_block_{$delta}_sort",        $config['sort']);
+-    $config['parent']      = variable_get("menu_block_{$delta}_parent",      $config['menu_name'] . ':' . $config['parent_mlid']);
++    $config['title_link']     = variable_get("menu_block_{$delta}_title_link",     $config['title_link']);
++    $config['admin_title']    = variable_get("menu_block_{$delta}_admin_title",    $config['admin_title']);
++    $config['level']          = variable_get("menu_block_{$delta}_level",          $config['level']);
++    $config['follow']         = variable_get("menu_block_{$delta}_follow",         $config['follow']);
++    $config['depth']          = variable_get("menu_block_{$delta}_depth",          $config['depth']);
++    $config['expanded']       = variable_get("menu_block_{$delta}_expanded",       $config['expanded']);
++    $config['sort']           = variable_get("menu_block_{$delta}_sort",           $config['sort']);
++    $config['parent']         = variable_get("menu_block_{$delta}_parent",         $config['menu_name'] . ':' . $config['parent_mlid']);
++    $config['include_parent'] = variable_get("menu_block_{$delta}_include_parent", $config['include_parent']);
+     list($config['menu_name'], $config['parent_mlid']) = explode(':', $config['parent']);
+   }
+
+@@ -279,10 +281,10 @@ function menu_tree_block_data(&$config) {
+   if ($config['level'] > 1 || $config['parent_mlid']) {
+     if ($config['parent_mlid']) {
+       $parent_item = menu_link_load($config['parent_mlid']);
+-      menu_tree_prune_tree($tree, $config['level'], $parent_item);
++      menu_tree_prune_tree($tree, $config['level'], $parent_item, $config['include_parent']);
+     }
+     else {
+-      menu_tree_prune_tree($tree, $config['level']);
++      menu_tree_prune_tree($tree, $config['level'], false, $config['include_parent']);
+     }
+   }
+
+@@ -578,10 +580,12 @@ function menu_tree_sort_active_path(&$tree) {
+  *   int The level of the original tree that will start the pruned tree.
+  * @param $parent_item
+  *   array The menu item that should be used as the root of the tree.
++ * @param $include_parent
++ *   boolean Whether to include the direct parent item of the tree.
+  * @return
+  *   void
+  */
+-function menu_tree_prune_tree(&$tree, $level, $parent_item = FALSE) {
++function menu_tree_prune_tree(&$tree, $level, $parent_item = FALSE, $include_parent = FALSE) {
+   if (!empty($parent_item)) {
+     // Prune the tree along the path to the menu item.
+     for ($i = 1; $i <= MENU_MAX_DEPTH && $parent_item["p$i"] != '0'; $i++) {
+@@ -592,8 +596,13 @@ function menu_tree_prune_tree(&$tree, $level, $parent_item = FALSE) {
+         if ($tree[$key]['link']['mlid'] == $plid) {
+           menu_block_set_title($tree[$key]['link']);
+           // Prune the tree to the children of this ancestor.
+-          $tree = $tree[$key]['below'] ? $tree[$key]['below'] : array();
+           $found_active_trail = TRUE;
++          if (!empty($include_parent) && $plid != $parent_item['plid']) {
++            $tree = array($key => $tree[$key]);
++          }
++          else {
++            $tree = $tree[$key]['below'] ? $tree[$key]['below'] : array();
++          }
+           break;
+         }
+       }
+@@ -616,8 +625,15 @@ function menu_tree_prune_tree(&$tree, $level, $parent_item = FALSE) {
+         // Get the title for the pruned tree.
+         menu_block_set_title($tree[$key]['link']);
+         // Prune the tree to the children of the item in the active trail.
+-        $tree = $tree[$key]['below'] ? $tree[$key]['below'] : array();
+         $found_active_trail = TRUE;
++        // If the current item is the direct parent of the submenu's top level
++        // and it shall be included, make it and its subtree the new tree.
++        if (!empty($include_parent) && $i == $level - 1) {
++          $tree = array($key => $tree[$key]);
++        }
++        else {
++          $tree = $tree[$key]['below'] ? $tree[$key]['below'] : array();
++        }
+         break;
+       }
+     }
+@@ -627,6 +643,14 @@ function menu_tree_prune_tree(&$tree, $level, $parent_item = FALSE) {
+       break;
+     }
+   }
++
++  // Remove the only item from the tree if it is the parent item configured to
++  // be included.
++  if (!empty($include_parent)
++      && count($tree) == 1
++      && !count($tree[key($tree)]['below'])) {
++    $tree = array();
++  }
+ }
+
+ /**
+--
+1.8.3.msysgit.0
+

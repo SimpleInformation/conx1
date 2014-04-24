@@ -1,0 +1,21 @@
+name = Entityform Calculator
+description = Added entity field to Entityforms that can perform mathematical calculations
+core = 7.x
+stylesheets[all][] = entityform_calculator.css
+
+dependencies[] = field
+dependencies[] = entityform
+dependencies[] = system (>=7.14)
+
+package = Entityforms
+
+files[]=entityform_calculator.install
+files[]=entityform_calculator.module
+files[]=js/entityform_calculator.js
+
+; Information added 2014-12-29
+version = "7.x-1.0+0-dev"
+core = "7.x"
+project = "entityform_calculator"
+datestamp = "1386095512"
+

@@ -1,0 +1,302 @@
+<?php
+/**
+ * Implements hook_menu().
+ *
+ * Sets up calls to drupal_get_form() for all our example cases.
+ *
+ * @see menu_example.module
+ * @see menu_example_menu()
+ */
+function retailer_dues_menu() {
+  $items = array();
+  $items['admin/config/content/retailer_dues'] = array(
+    'title' => 'Base Dues config',
+    'description' => 'Configuration for Same Retailer Dues',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('retailer_dues_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+ }
+
+/**
+ * Implements hook_field_info().
+ */
+function retailer_dues_field_info() {
+  return array(
+    'retailer_dues' => array(
+      'label' => t('Retailer Dues'),
+      'description' => t('This field stores a license plate number in the database.'),
+      'default_widget' => 'retailer_dues_field',
+      'default_formatter' => 'retailer_dues_default',
+    ),
+  );
+}
+/**
+ * Implements hook_field_widget_info().
+ */
+function retailer_dues_field_widget_info() {
+  return array(
+    'retailer_dues_field' => array(
+      'label' => t('Text field'),
+      'field types' => array('retailer_dues'),
+    ),
+  );
+}
+/**
+ * Implements hook_field_settings_form().
+ */
+function retailer_dues_field_settings_form($field, $instance, $has_data) {
+  $settings = $field['settings'];
+  // Add your global settings fields here
+  $form = array();
+  $fields_options = array();
+  foreach (field_info_fields() as $field) {
+    if ($field['type'] == 'basedues') {
+	  $fields_options[$field['field_name']] = $field['field_name'];
+	  }
+  }
+  	    $form['fields']['basedues'] = array(
+		  '#type' => 'select',
+		  '#title' => t('Select the Base Dues field'),
+		  '#required' => TRUE,
+		  '#options' => $fields_options,
+		  '#default_value' => !empty($settings['fields']['basedues']) ? $settings['fields']['basedues'] : '',
+		  '#description' => t('Select sum field'),
+        );  
+    $member_options = array('gold'=>'Gold','silver'=>'Silver','bronze'=>'Bronze');
+	$form['fields']['member_type'] = array(
+	  '#type' => 'select',
+	  '#title' => t('Select the Member Type field'),
+	  '#required' => TRUE,
+	  '#options' => $member_options,
+	  '#default_value' => !empty($settings['fields']['member_type']) ? $settings['fields']['member_type'] : '',
+	  '#description' => t('Select Member Type field'),
+	);
+  return $form;
+}
+/**
+ * Implements hook_field_widget_form().
+ */
+function retailer_dues_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  switch ($instance['widget']['type']) {
+    case 'retailer_dues_field' :
+      if((isset($field['settings']['fields']['basedues']))) {
+	   // SR - Adding entity form js - drupal_add_js
+
+		$var_1  = variable_get('gold_value_min');
+		$var_2  = variable_get('gold_value_max');
+		$var_3  = variable_get('gold_rate');
+		$var_4  = variable_get('silver_value_min');
+		$var_5  = variable_get('silver_value_max');
+		$var_6  = variable_get('silver_rate');
+		$var_7  = variable_get('bronze_value');
+	   // SR - Adding entity form js - drupal_add_js
+	    $my_variables = array('gold_value_min' => $var_1, 'gold_value_max' => $var_2, 'gold_rate' => $var_3, 
+		'silver_value_min' => $var_4, 'silver_value_max' => $var_5, 'silver_rate' => $var_6,'bronze_value' => $var_7); // and so on
+	    drupal_add_js(array('retailer_dues' => $my_variables), 'setting'); // 
+	    drupal_add_js(drupal_get_path('module', 'retailer_dues') .'/js/retailer_dues.js', array('weight' => 101));
+      }
+      $element['retailer_dues'] = array(
+        '#type' => 'textfield',
+        '#title' => t($element['#title']),
+        '#default_value' => isset($items[$delta]['retailer_dues']) ? $items[$delta]['retailer_dues'] : '',
+        '#required' => $element['#required'],
+		'#attributes' => array('readonly'=>'readonly'),
+        //'#size' => 17,		
+        // '#attributes' => array('maxlength' => 8),
+      );
+
+      break;
+  }
+  return $element;
+}
+/**
+ * Implements hook_field_is_empty().
+ */
+function retailer_dues_field_is_empty($item, $field) {
+  //if (empty($item['retailer_dues']['plate_number'])) {
+    return FALSE;
+  //}
+  //return FALSE;
+}
+/**
+ * Implements hook_field_formatter_info().
+ */
+function retailer_dues_field_formatter_info() {
+  return array(
+    'retailer_dues_default' => array(
+      'label' => t('Default'),
+      'field types' => array('retailer_dues'),
+    ),
+  );
+}
+/**
+ * Implements hook_field_formatter_view().
+ */
+function retailer_dues_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'retailer_dues_default' :
+      foreach ($items as $delta => $item) {
+        if (isset($item['retailer_dues'])) {
+          $element[$delta]['#markup'] = $item['retailer_dues'];
+        }
+      }
+      break;
+  }
+  return $element;
+}
+function retailer_dues_form($form, &$form_state) {
+  $form['gold_rate'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Gold Member Type multiple rate'),
+    '#default_value' => variable_get('gold_rate', 1.5),
+    '#description' => t('Gold Member Type multiple rate'),
+    '#required' => TRUE,
+  );
+  $form['gold_value'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Min Gold Member Type value'),
+    '#default_value' => variable_get('gold_value', 1200),
+    '#description' => t('Min Gold Member Type value'),
+    '#required' => TRUE,
+  );
+  $form['gold_value_min'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Min Gold Member Type value'),
+    '#default_value' => variable_get('gold_value_min', 1200),
+    '#description' => t('Min Gold Member Type value'),
+    '#required' => TRUE,
+  );
+  $form['gold_value_max'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Max Gold Member Type value'),
+    '#default_value' => variable_get('gold_value_max', 10000),
+    '#description' => t('Max Gold Member Type value'),
+    '#required' => TRUE,
+  );
+    $form['silver_rate'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Silver Member Type multiple rate'),
+    '#default_value' => variable_get('silver_rate', 0.5),
+    '#description' => t('Silver Member Type multiple rate'),
+    '#required' => TRUE,
+  );
+  $form['silver_value'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Silver Member Type value'),
+    '#default_value' => variable_get('silver_value', 800),
+    '#description' => t('Min Silver Member Type value'),
+    '#required' => TRUE,
+  );
+  $form['silver_value_min'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Min Silver Member Type value'),
+    '#default_value' => variable_get('silver_value_min', 800),
+    '#description' => t('Min Silver Member Type value'),
+    '#required' => TRUE,
+  );
+  $form['silver_value_max'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Max Silver Member Type value'),
+    '#default_value' => variable_get('silver_value_max', 5000),
+    '#description' => t('Max Silver Member Type value'),
+    '#required' => TRUE,
+  );
+  $form['bronze_value'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Bronze Member Type value'),
+    '#default_value' => variable_get('bronze_value', 800),
+    '#description' => t('Bronze Member Type value'),
+    '#required' => TRUE,
+  );
+  return system_settings_form($form);
+}
+/**
+ * Implements field hook_form_alter().
+ */
+function retailer_dues_form_alter(&$form, &$form_state, $form_id)  {
+  //SR - Checks for the sum field entry
+  if(isset($form_state['field'])) {
+    if(count($form_state['field'])) {
+      foreach($form_state['field'] as $key => $val) {
+	    if((isset($val[LANGUAGE_NONE]['field']['settings']['fields']['basedues']))&&(isset($val[LANGUAGE_NONE]['field']['settings']['fields']['member_type']))) {
+	       //print_r($val[LANGUAGE_NONE]['field']['settings']['fields']['sumfield']);
+		   $class = $val[LANGUAGE_NONE]['field']['settings']['fields']['member_type'];
+		   $bsefield = $val[LANGUAGE_NONE]['field']['field_name'];
+		   $form[$bsefield]['#attributes']['class'][] = 'retailer_dues_'.$class; 	
+		   array_unshift($form['#submit'], "_entity_form_retailer_dues_submit");
+		   if(isset($form['actions']['submit']['#submit'])){
+		      array_unshift($form['actions']['submit']['#submit'], "_entity_form_retailer_dues_submit");
+		   }
+		   if(isset($form['actions']['save']['#submit'])){
+		     array_unshift($form['actions']['save']['#submit'], "_entity_form_retailer_dues_submit");	  
+		   }
+	    }
+	  }
+	}
+  }  
+}
+/**
+ * Entity form submit function
+ */
+function _entity_form_retailer_dues_submit($form, &$form_state) {
+  if(isset($form_state['field'])) {
+    if(count($form_state['field'])) {
+      foreach($form_state['field'] as $key => $val) {
+        if((isset($val[LANGUAGE_NONE]['field']['settings']['fields']['computed_field_to_recompute'])) && (isset($val[LANGUAGE_NONE]['field']['settings']['fields']['calculate_field_2']))) {
+	      $field1   = $val[LANGUAGE_NONE]['field']['settings']['fields']['computed_field_to_recompute'];
+	      $field2   = $val[LANGUAGE_NONE]['field']['settings']['fields']['calculate_field_2'];
+	      $sumfield = $val[LANGUAGE_NONE]['field']['field_name'];
+
+        }
+		if((isset($val[LANGUAGE_NONE]['field']['settings']['fields']['sumfield']))){
+		  $basefiled = $val[LANGUAGE_NONE]['field']['field_name'];
+		}
+		if((isset($val[LANGUAGE_NONE]['field']['settings']['fields']['member_type']))){
+		  $membertype = $val[LANGUAGE_NONE]['field']['settings']['fields']['member_type'];
+		  $retailfield  = $val[LANGUAGE_NONE]['field']['field_name'];
+		  
+		}
+      }
+	  //SR - Adding the two fields to the Retail dues field
+	  if(isset($form_state['values'][$field1][LANGUAGE_NONE][0]['value']) && isset($form_state['values'][$field2][LANGUAGE_NONE][0]['value'])) {
+	    $basedue = $form_state['values'][$field1][LANGUAGE_NONE][0]['value']+$form_state['values'][$field2][LANGUAGE_NONE][0]['value'];
+		$basedue = basedues_calculate($basedue);
+		$Retaildues = retailer_dues_calculate($basedue,$membertype);
+	    $form_state['values'][$retailfield][LANGUAGE_NONE][0]['retailer_dues'] = $Retaildues;
+		
+	  }
+	}
+  }
+}
+/*
+*calculation logic based on sum goes here
+*/
+function retailer_dues_calculate($total_sales,$membertype){
+  $min = $max = $rate = $retail_dues = 0;
+  switch($membertype) {
+    case 'gold': 
+		$min  = variable_get('gold_value_min');
+		$max  = variable_get('gold_value_max');
+		$rate = variable_get('gold_rate');
+		$retail_dues = ($total_sales * $rate);
+		if($retail_dues < $min) $retail_dues = $min;
+		if($retail_dues > $max) $retail_dues = $max;
+	 break;
+	case 'silver':
+		$min  = variable_get('silver_value_min');
+		$max  = variable_get('silver_value_max');
+		$rate = variable_get('silver_rate');
+		$retail_dues = ($total_sales * $rate);
+		if($retail_dues < $min) $retail_dues = $min;
+		if($retail_dues > $max) $retail_dues = $max;
+	  break;
+    case 'bronze':
+		$retail_dues = variable_get('bronze_value');
+	  break;
+  }
+  return $retail_dues;
+}

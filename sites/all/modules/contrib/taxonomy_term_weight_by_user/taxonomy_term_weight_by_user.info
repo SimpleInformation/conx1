@@ -1,0 +1,8 @@
+name = Taxonomy term weight by user
+
+; Information added by drupal.org packaging script on 2013-08-27
+version = "7.x-1.0"
+core = "7.x"
+project = "taxonomy_term_weight_by_user"
+datestamp = "1377636136"
+

@@ -1,0 +1,286 @@
+<?php
+/**
+ * Implements hook_menu().
+ *
+ * Sets up calls to drupal_get_form() for all our example cases.
+ *
+ * @see menu_example.module
+ * @see menu_example_menu()
+ */
+function basedues_menu() {
+  $items = array();
+  $items['basedues_ajax_calculation'] = array(
+    'title' => 'base due calculation',
+    'page callback' => 'basedues_ajax_calculation',
+    'access callback' => TRUE,
+    'expanded' => TRUE,
+  );
+  $items['admin/config/content/basedues'] = array(
+    'title' => 'Base Dues config',
+    'description' => 'Configuration for Same Base Dues',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('base_dues_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+ }
+/**
+ * Implements hook_field_info().
+ */
+function basedues_field_info() {
+  return array(
+    'basedues' => array(
+      'label' => t('Base Dues'),
+      'description' => t('This field stores a license plate number in the database.'),
+      'default_widget' => 'basedues_field',
+      'default_formatter' => 'basedues_default',
+    ),
+  );
+}
+/**
+ * Implements hook_field_widget_info().
+ */
+function basedues_field_widget_info() {
+  return array(
+    'basedues_field' => array(
+      'label' => t('Text field'),
+      'field types' => array('basedues'),
+    ),
+  );
+}
+/**
+ * Implements hook_field_settings_form().
+ */
+function basedues_field_settings_form($field, $instance, $has_data) {
+  $settings = $field['settings'];
+  // Add your global settings fields here
+  $form = array();
+  foreach (field_info_fields() as $field) {
+    if ($field['type'] == 'sum') {
+	  $fields_options[$field['field_name']] = $field['field_name'];
+	  
+	    $form['fields']['sumfield'] = array(
+		'#type' => 'select',
+		'#title' => t('Select the sum field'),
+		'#required' => TRUE,
+		'#options' => $fields_options,
+		'#default_value' => !empty($settings['fields']['sumfield']) ? $settings['fields']['sumfield'] : '',
+		'#description' => t('Select sum field'),
+    );
+  
+	}
+  }
+  return $form;
+}
+/**
+ * Implements hook_field_widget_form().
+ */
+function basedues_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  switch ($instance['widget']['type']) {
+    case 'basedues_field' :
+      if((isset($field['settings']['fields']['sumfield']))) {
+	    $var_1 = variable_get('lowest_total_sales_limit');
+	    $var_2 = variable_get('lowest_basic_dues');
+        $var_3 = variable_get('second_tier_upper_limit');
+        $var_4 = variable_get('third_tier_upper_limit');
+        $var_5 = variable_get('third_tier_base_value');
+        $var_6 = variable_get('fourth_tier_base_value');
+	   // SR - Adding entity form js - drupal_add_js
+	    $my_variables = array('lowest_total_sales_limit' => $var_1, 'lowest_basic_dues' => $var_2, 'second_tier_upper_limit' => $var_3, 
+		'third_tier_upper_limit' => $var_4, 'third_tier_base_value' => $var_5, 'fourth_tier_base_value' => $var_6); // and so on
+	    drupal_add_js(array('basedues' => $my_variables), 'setting'); // 
+	    drupal_add_js(drupal_get_path('module', 'basedues') .'/js/basedues.js', array('weight' => 100));
+      }
+      $element['basedues'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Base Dues'),
+        '#default_value' => isset($items[$delta]['basedues']) ? $items[$delta]['basedues'] : '',
+        '#required' => $element['#required'],
+		'#attributes' => array('readonly'=>'readonly'),
+        '#size' => 17,
+		
+       // '#attributes' => array('maxlength' => 8),
+      );
+
+      break;
+  }
+  return $element;
+}
+/**
+ * Implements hook_field_is_empty().
+ */
+function basedues_field_is_empty($item, $field) {
+  //if (empty($item['basedues']['plate_number'])) {
+    return FALSE;
+  //}
+  //return FALSE;
+}
+/**
+ * Implements hook_field_formatter_info().
+ */
+function basedues_field_formatter_info() {
+  return array(
+    'basedues_default' => array(
+      'label' => t('Default'),
+      'field types' => array('basedues'),
+    ),
+  );
+}
+/**
+ * Implements hook_field_formatter_view().
+ */
+function basedues_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'basedues_default' :
+      foreach ($items as $delta => $item) {
+        if (isset($item['basedues'])) {
+          $element[$delta]['#markup'] = $item['basedues'];
+        }
+      }
+      break;
+  }
+  return $element;
+}
+/**
+ * Implements field hook_form_alter().
+ */
+function basedues_form_alter(&$form, &$form_state, $form_id)  {
+  //SR - Checks for the sum field entry
+  if(isset($form_state['field'])) {
+    if(count($form_state['field'])) {
+      foreach($form_state['field'] as $key => $val) {
+	    if((isset($val[LANGUAGE_NONE]['field']['settings']['fields']['sumfield']))) {
+	       //print_r($val[LANGUAGE_NONE]['field']['settings']['fields']['sumfield']);
+		   $bsefield = $val[LANGUAGE_NONE]['field']['field_name'];
+		   $form[$bsefield]['#attributes']['class'][] = 'base_dues'; 	
+		   array_unshift($form['#submit'], "_entity_form_basedues_submit");
+		   if(isset($form['actions']['submit']['#submit'])){
+		      array_unshift($form['actions']['submit']['#submit'], "_entity_form_basedues_submit");
+		   }
+		   if(isset($form['actions']['save']['#submit'])){
+		     array_unshift($form['actions']['save']['#submit'], "_entity_form_basedues_submit");	  
+		   }
+	    }
+	  }
+	}
+  }  
+}
+/**
+ * Entity form submit function
+ */
+function _entity_form_basedues_submit($form, &$form_state) {
+  if(isset($form_state['field'])) {
+    $field1 = $field2 = $sumfield = 0;
+    if(count($form_state['field'])) {
+      foreach($form_state['field'] as $key => $val) {
+        if((isset($val[LANGUAGE_NONE]['field']['settings']['fields']['computed_field_to_recompute'])) && (isset($val[LANGUAGE_NONE]['field']['settings']['fields']['calculate_field_2']))) {
+	      $field1   = $val[LANGUAGE_NONE]['field']['settings']['fields']['computed_field_to_recompute'];
+	      $field2   = $val[LANGUAGE_NONE]['field']['settings']['fields']['calculate_field_2'];
+	      $sumfield = $val[LANGUAGE_NONE]['field']['field_name'];
+
+        }
+		if((isset($val[LANGUAGE_NONE]['field']['settings']['fields']['sumfield']))){
+		  $basefiled = $val[LANGUAGE_NONE]['field']['field_name'];
+		}
+      }
+	  //SR - Adding the two fields to the sum field
+	  if(isset($form_state['values'][$field1][LANGUAGE_NONE][0]['value']) && isset($form_state['values'][$field2][LANGUAGE_NONE][0]['value'])) {
+	    $basedue = $form_state['values'][$field1][LANGUAGE_NONE][0]['value']+$form_state['values'][$field2][LANGUAGE_NONE][0]['value'];
+		$basedue = basedues_calculate($basedue);
+	    $form_state['values'][$basefiled][LANGUAGE_NONE][0]['basedues'] = $basedue;
+		
+	  }
+	}
+  }
+}
+/*
+*ajax callback
+*/
+function basedues_ajax_calculation($form, $form_state){
+//getting sum field name
+ $info = field_info_field('field_base_dues');
+ $sum_field = $info['settings']['fields']['sumfield'];	
+ $sum = $form_state['input'][$sum_field]['und'][0]['value'];
+ //calculation of base due here
+ $base_due = basedues_calculate($sum);
+
+ $form['field_base_dues']['und'][0]['basedues']['#value'] = $base_due;
+ return $form['field_base_dues'];
+}
+
+function base_dues_form($form, &$form_state) {
+  $form['lowest_total_sales_limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Lowest Total Sales Limit'),
+    '#default_value' => variable_get('lowest_total_sales_limit', 6000000),
+    '#description' => t('Lowest Total Sales Limit'),
+    '#required' => TRUE,
+  );
+  $form['lowest_basic_dues'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Lowest Basic Dues'),
+    '#default_value' => variable_get('lowest_basic_dues', 800),
+    '#description' => t('Lowest Basic Dues'),
+    '#required' => TRUE,
+  );
+  $form['second_tier_upper_limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Second Tier Upper Limit'),
+    '#default_value' => variable_get('second_tier_upper_limit', 30000000),
+    '#description' => t('Second Tier Upper Limit'),
+    '#required' => TRUE,
+  );
+  $form['third_tier_upper_limit'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Third Tier Upper Limit'),
+    '#default_value' => variable_get('third_tier_upper_limit', 90000000),
+    '#description' => t('Third Tier Upper Limit'),
+    '#required' => TRUE,
+  );
+  $form['third_tier_base_value'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Third Tier  Base Value'),
+    '#default_value' => variable_get('third_tier_base_value', 1100),
+    '#description' => t('Third Tier  Base Value'),
+    '#required' => TRUE,
+  );
+  $form['fourth_tier_base_value'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Fourth Tier Base Value'),
+    '#default_value' => variable_get('fourth_tier_base_value', 1820),
+    '#description' => t('Fourth Tier Base Value'),
+    '#required' => TRUE,
+  );
+  return system_settings_form($form);
+}
+/*
+*calculation logic based on sum goes here
+VAR1: Lowest Total Sales Limit
+VAR2: Lowest Basic Dues
+VAR3: Second Tier Upper Limit
+VAR4: Third Tier Upper Limit
+VAR5: Third Tier  Base Value
+VAR6: Fourth Tier Base Value
+*/
+function basedues_calculate($total_sales){
+  $var_1 = variable_get('lowest_total_sales_limit');
+  $var_2 = variable_get('lowest_basic_dues');
+  $var_3 = variable_get('second_tier_upper_limit');
+  $var_4 = variable_get('third_tier_upper_limit');
+  $var_5 = variable_get('third_tier_base_value');
+  $var_6 = variable_get('fourth_tier_base_value');
+
+  
+   $base_dues = 0;
+  if ($total_sales <= $var_1)
+    $base_dues = $var_2;
+  elseif ($total_sales > $var_1 && $total_sales <= $var_3)
+    $base_dues = $var_2 + 13 * (($total_sales - $var_1) / 1000000);
+  elseif ($total_sales > $var_3 && $total_sales < $var_4)
+    $base_dues = $var_5 + 12 * (($total_sales - $var_3) / 1000000);
+  else
+    $base_dues = $var_6 + 11 * (($total_sales - $var_4) / 1000000);
+  return round($base_dues);
+}

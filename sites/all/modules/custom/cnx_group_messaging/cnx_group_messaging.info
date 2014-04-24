@@ -1,0 +1,6 @@
+name = CONEXXUS Group Messaging
+description = Customizations to the OG group messaging
+core = 7.x
+
+package = CONEXXUS
+dependencies[] = og_email_blast

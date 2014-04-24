@@ -1,0 +1,10 @@
+name = basedues
+description = base dues
+core = 7.X
+
+dependencies[] = entityform_calculator
+package = Entityforms
+
+; Information added 2014-27-29
+version = "7.x-1.0+0-dev"
+core = "7.x"

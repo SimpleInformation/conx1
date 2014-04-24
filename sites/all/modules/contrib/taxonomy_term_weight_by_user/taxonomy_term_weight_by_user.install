@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Recently read installation file.
+ * Displays a history of recently read nodes by currently logged in user.
+ */
+
+
+/**
+ * Implements hook_schema().
+ */
+function taxonomy_term_weight_by_user_schema() {
+  $schema['taxonomy_term_weight_by_user'] = array(
+    'description' => 'Stores weight term information by user.',
+    'fields' => array(
+      'tid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The id of the term',
+      ),
+      'uid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The uid o fthe user.',
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The weight of this term for the specific user.',
+      ),
+    ),
+    'primary key' => array('tid','uid'),
+  );
+
+  return $schema;
+}
+

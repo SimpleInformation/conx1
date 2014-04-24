@@ -1,0 +1,43 @@
+<?php
+/**
+ * Implements hook_field_schema().
+ */
+function retailer_dues_field_schema($field) {
+  return array(
+    'columns' => array(
+      'retailer_dues' => array(
+        'type' => 'numeric',
+        'not null' => TRUE,
+      ),
+    ),
+  );
+}
+/**
+ * Implements hook_install().
+ */
+function retailer_dues_install() {
+  variable_set('gold_rate', 1.5);
+  variable_set('gold_value', 1200);
+  variable_set('gold_value_min', 1200);
+  variable_set('gold_value_max', 10000);
+  variable_set('silver_rate', 0.5);
+  variable_set('silver_value', 800);
+  variable_set('silver_value_min', 800);
+  variable_set('silver_value_max', 5000);
+  variable_set('bronze_value', 800);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function basicdues_uninstall() {
+  variable_del('gold_rate');
+  variable_del('gold_value');
+  variable_del('gold_value_min');
+  variable_del('gold_value_max');
+  variable_del('silver_rate');
+  variable_del('silver_value');
+  variable_del('silver_value_min');
+  variable_del('silver_value_max');
+  variable_del('bronze_value');
+}

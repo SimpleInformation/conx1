@@ -1,0 +1,6 @@
+.media-item img {
+margin-bottom: 0 !important;
+}
+.media-item .label-wrapper {
+display: none !important;
+}

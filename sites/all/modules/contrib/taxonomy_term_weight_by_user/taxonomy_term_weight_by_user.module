@@ -1,0 +1,168 @@
+<?php
+
+/**
+ * @file
+ * taxonomy term weight by user module file.
+ */
+
+
+/**
+ * Implements hook_views_data().
+ */
+function taxonomy_term_weight_by_user_views_data() {
+  $data = array();
+
+  $data['taxonomy_term_weight_by_user']['table']['group'] = t('Taxonomy weight by user');
+  $data['taxonomy_term_weight_by_user']['table']['join'] = array(
+    'taxonomy_term_data' => array(
+      // Links to self through left.parent = right.tid (going down in depth).
+      'left_field' => 'tid',
+      'field' => 'tid',
+      'type' => 'INNER',
+    ),
+     // This is provided for many_to_one argument.
+    'taxonomy_index' => array(
+      'field' => 'tid',
+      'left_field' => 'tid',
+      'type' => 'INNER',
+    ),
+  );
+
+  $data['taxonomy_term_weight_by_user']['uid'] = array(
+    'title' => t('User id'),
+    'help' => t('Uid of user.'),
+    'field' => array(
+      'handler' => 'views_handler_field_numeric',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array('handler' => 'views_handler_filter_numeric'),
+    'argument' => array('handler' => 'views_handler_argument_numeric'),
+    'sort' => array('handler' => 'views_handler_sort'),
+  );
+
+  $data['taxonomy_term_weight_by_user']['weight'] = array(
+    'title' => t('Weight'),
+    'help' => t('Weight of term.'),
+    'field' => array(
+      'handler' => 'views_handler_field_numeric',
+      'click sortable' => TRUE,
+    ),
+    'sort' => array('handler' => 'views_handler_sort'),
+  );
+
+  return $data;
+}
+
+/**
+ * Implements of hook_views_api().
+ */
+function taxonomy_term_weight_by_use_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'taxonomy_term_weight_by_use'),
+  );
+}
+
+/**
+ * Implements of hook_views_api().
+ */
+function taxonomy_term_weight_by_user_user_delete($account) {
+  // Delete all records in the taxonomy_term_weight_by_user table for an user
+  // removed.
+  $taxonomy_term_weight = db_delete('taxonomy_term_weight_by_user')
+      ->condition('uid', $account->uid)
+      ->execute();
+  if ($taxonomy_term_weight) {
+    watchdog('taxonomy_term_weight_by_user', 'Records deleted with uid ' . $account->uid);
+  }
+}
+
+/**
+ * Implements of hook_views_api().
+ */
+function taxonomy_term_weight_by_user_taxonomy_term_delete($term) {
+  // Delete all records in the taxonomy_term_weight_by_user table for an user
+  // removed.
+  $taxonomy_term_weight = db_delete('taxonomy_term_weight_by_user')
+    ->condition('tid', $term->tid)
+    ->execute();
+  if ($taxonomy_term_weight) {
+    watchdog('taxonomy_term_weight_by_user', 'Records deleted with tid ' . $term->tid);
+  }
+}
+
+/**
+ * Process to get the weight of a taxonomy for an user.
+ *
+ * @global type $user
+ *
+ * @param int $term_id
+ *   Id of the taxonomy term
+ *
+ * @param int $uid
+ *   Uid of user
+ *
+ * @return int
+ *   Return the weight of the taxonomy
+ */
+function taxonomy_term_weight_by_user_get_weight($term_id, $uid = NULL) {
+  global $user;
+  if (!isset($term_id)) {
+    return FALSE;
+  }
+
+  if (!$uid) {
+    $uid = $user->uid;
+  }
+
+  $query = db_select('taxonomy_term_weight_by_user', 'tt');
+  $query->fields('tt', array('weight'));
+  $query->condition('tt.uid', $uid);
+  $query->condition('tt.tid', $term_id);
+  $record = $query->execute()->fetchAssoc();
+
+  // Validate if exist the weight of the taxonomy.
+  $result = isset($record['weight']) ? $record['weight'] : FALSE;
+  return $result;
+}
+
+/**
+ * Update or insert the weight of a taxonomy for an user.
+ *
+ * @global type $user
+ *
+ * @param int $term_id
+ *   Id of the taxonomy term
+ *
+ * @param int $uid
+ *   Uid of user
+ *
+ * @return bool
+ *   Return FALSE or TRUE
+ */
+function taxonomy_term_weight_by_user_set_weight($term_id, $weight, $uid = NULL) {
+  global $user;
+  if (!isset($term_id) || !isset($weight)) {
+    return FALSE;
+  }
+
+  if (!$uid) {
+    $uid = $user->uid;
+  }
+
+  // Update or insert the weight of a taxonomu for a user specific.
+  $update = db_merge('taxonomy_term_weight_by_user')
+    ->key(array(
+      'uid' => $uid,
+      'tid' => $term_id,
+      ))
+    ->fields(array(
+      'uid' => $uid,
+      'weight' => $weight,
+      'tid' => $term_id,
+      ))
+    ->execute();
+
+  $result = isset($update) ? TRUE : FALSE;
+  return $result;
+}
