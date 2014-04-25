@@ -91,6 +91,9 @@ function og_email_blast_mail_send($form_values) {
 function og_email_blast_mail($key, &$message, $params) {
   switch ($key) {
     case 'group_message':
+      $message['headers']['MIME-Version'] = '1.0';
+      $message['headers']['Content-Type'] = 'multipart/mixed;';
+      $message['headers']['Content-Type'] = 'text/html;';
       $message['headers']['Bcc'] = $params['to'];
       $message['headers']['Reply-To'] = $params['admin_email'];
       $message['subject'] = check_plain($params['subject']);
