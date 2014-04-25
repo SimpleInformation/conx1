@@ -98,6 +98,7 @@ function og_email_blast_mail($key, &$message, $params) {
       $message['headers']['Reply-To'] = $params['admin_email'];
       $message['subject'] = check_plain($params['subject']);
       $message['body'][] = check_plain($params['message']['value']);
+      $message['params']['attachments'] = $params; 
       watchdog('og_email_blast', $params['admin'] . ' sent an e-mail blast to ' . $params['group']);
       break;
   }
