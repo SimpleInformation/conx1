@@ -1,8 +1,8 @@
 # Added by Mark Mcintosh Simple Information to control access uptil go live
-AuthType Basic
-AuthName "Protected Area"
-AuthUserFile /var/www/conexxus/.htpasswd
-Require valid-user
+#AuthType Basic
+#AuthName "Protected Area"
+#AuthUserFile /var/www/conexxus/.htpasswd
+#Require valid-user
 
 #
 # Apache/PHP/Drupal settings:
