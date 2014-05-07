@@ -60,7 +60,6 @@ function og_email_blast_group($form, &$form_state, $entity_type, $etid) {
  * Submit handler; E-mail group members.
  */
 function og_email_blast_group_submit($form, &$form_state) {
-  dpm($form_state);
   og_email_blast_mail_send($form_state['values']);
   // Redirect to the group admin page.
   $form_state['redirect'] = $form_state['values']['group_url'];
@@ -98,8 +97,7 @@ function og_email_blast_mail($key, &$message, $params) {
       $message['headers']['Reply-To'] = $params['admin_email'];
       $message['subject'] = check_plain($params['subject']);
       $message['body'][] = check_plain($params['message']['value']);
-      $message['params']['attachments'] = $params;
-     dpm($message['headers']); 
+      $message['params']['attachments'] = $params;    
       watchdog('og_email_blast', $params['admin'] . ' sent an e-mail blast to ' . $params['group']);
       break;
   }
