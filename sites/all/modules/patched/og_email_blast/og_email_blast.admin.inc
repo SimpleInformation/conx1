@@ -91,13 +91,10 @@ function og_email_blast_mail_send($form_values) {
 function og_email_blast_mail($key, &$message, $params) {
   switch ($key) {
     case 'group_message':
-      $message['headers']['MIME-Version'] = '1.0';
-      $message['headers']['Content-Type'] = 'text/html;';
       $message['headers']['Bcc'] = $params['to'];
       $message['headers']['Reply-To'] = $params['admin_email'];
       $message['subject'] = check_plain($params['subject']);
-      $message['body'][] = check_plain($params['message']['value']);
-      $message['params']['attachments'] = $params;    
+      $message['body'][] = check_plain($params['message']);    
       watchdog('og_email_blast', $params['admin'] . ' sent an e-mail blast to ' . $params['group']);
       break;
   }
