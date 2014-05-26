@@ -42,7 +42,8 @@ function og_email_blast_group($form, &$form_state, $entity_type, $etid) {
       '#required' => TRUE,
     );
     $form['message'] = array(
-      '#type' => 'textarea',
+       '#type' => 'text_format',
+//      '#type' => 'textarea',
       '#title' => t('Message'),
       '#required' => TRUE,
     );
@@ -76,7 +77,16 @@ function og_email_blast_mail_send($form_values) {
   $params = $form_values;
   $language = language_default();
   $send = TRUE;
+ //print_r($params, TRUE);
+  //exit();
+  $params["message"] = $params["message"]["value"];
+
+//  file_put_contents('/var/www/conex/conexxus-live/sites/all/modules/patched/og_email_blast/filename.txt', print_r($params["message"], true));
+
+
+//  watchdog('debug', '<pre>'. print_r($params['message'], TRUE) .'</pre>');
   $result = drupal_mail($module, $key, $to, $language, $params, $from, $send);
+
   if ($result['result'] == TRUE) {
     drupal_set_message(t('Your message has been sent.'));
   }
@@ -91,14 +101,27 @@ function og_email_blast_mail_send($form_values) {
 function og_email_blast_mail($key, &$message, $params) {
   switch ($key) {
     case 'group_message':
+  // watchdog('debug', '<pre>'. print_r($params['message'], TRUE) .'</pre>');
+      $headers = array(
+        'MIME-Version' => '1.0',
+        'Content-Type' => 'text/html; charset=UTF-8; format=flowed',
+        'Content-Transfer-Encoding' => '8Bit',
+        'X-Mailer' => 'Drupal'
+      );
+      foreach ($headers as $key => $value) {
+        $message['headers'][$key] = $value;
+      }
+
       $message['headers']['Bcc'] = $params['to'];
       $message['headers']['Reply-To'] = $params['admin_email'];
       $message['subject'] = check_plain($params['subject']);
-      $message['body'][] = check_plain($params['message']);    
+      $message['body'][] = $params['message'];
       watchdog('og_email_blast', $params['admin'] . ' sent an e-mail blast to ' . $params['group']);
       break;
   }
 }
+
+
 
 /**
  * Utility function to get group members' e-mail addresses. This list does not
