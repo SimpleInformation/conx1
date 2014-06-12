@@ -6,26 +6,31 @@
 function extended_file_field_taxonomy_extended_file_field_metadata_types() {
   return array(
     'taxonomy' => array(
-      'title' => t('File Version'),
+      'title' => t('File Version, Working File Version'),
       'sort' => FALSE,
       'formatter' => 'extended_file_field_taxonomy_render'
     )
-  );
+  );  
 }
+
 
 function extended_file_field_taxonomy_render($item, $context) {
 
-
   // TODO: Need to find a way to not hardcode this.
-  $field_name = 'field_version';
+
+  $field_name[1] = 'field_version';
+  $field_name[2] = 'field_working_group_version';
+
+
 
   $terms = array();
 
-  foreach ($item[$field_name][$context['langcode']] as $row) {
-
-    $terms[] = taxonomy_term_load($row['tid'])->name;
-
+ foreach($field_name as $key=>$value){
+  foreach ($item[$value][$context['langcode']] as $row) {
+  $terms[] = taxonomy_term_load($row['tid'])->name;
   }
+  }
+
 
   return implode(', ', $terms);
 }
