@@ -1,10 +1,11 @@
+
 <?php
 /**
  * @file
- * Enable group admins to send e-mail blasts to group members.
+ *   Enable group admins to send e-mail blasts to group members.
  */
 
-/**
+ /**
  * Implements hook_help().
  */
 function og_email_blast_help($path, $arg) {
@@ -22,7 +23,6 @@ function og_email_blast_help($path, $arg) {
     return $output;
   }
 }
-
 /**
  * Implements hook_og_permission().
  */
@@ -36,7 +36,7 @@ function og_email_blast_og_permission() {
   return $items;
 }
 
-/**
+ /**
  * Implements hook_menu().
  */
 function og_email_blast_menu() {
@@ -48,23 +48,21 @@ function og_email_blast_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('og_email_blast_group', 1, 2),
     'access callback' => 'og_user_access_entity',
-    'access arguments' => array('administer group', 1, 2),
+    'access arguments' => array('email people', 1, 2),
     'file' => 'og_email_blast.admin.inc',
   );
-  return $items;
+return $items;
 }
 
 /**
  * Implements hook_og_ui_get_group_admin().
  */
-function og_email_blast_og_ui_get_group_admin($group_type, $gid) {
+function og_email_blast_og_ui_get_group_admin($gid) {
   $items = array();
-  if (og_user_access($group_type, $gid, 'email people')) {
-    $items['email_people'] = array(
-      'title' => t('E-mail people'),
-      'description' => t('E-mail group members.'),
-      'href' => "admin/email",
-    );
-  }
+  $items['email_people'] = array(
+    'title' => t('E-mail people'),
+    'description' => t('E-mail group members.'),
+    'href' => "admin/email",
+  );
   return $items;
 }

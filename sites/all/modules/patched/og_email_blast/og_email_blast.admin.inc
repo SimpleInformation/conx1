@@ -72,7 +72,8 @@ function og_email_blast_group_submit($form, &$form_state) {
 function og_email_blast_mail_send($form_values) {
   $module = 'og_email_blast';
   $key = 'group_message';
-  $to = $form_values['to'];
+ // $to = $form_values['to'];
+  $to = $form_values['to'].",".$form_values['admin_email'];
   $from = variable_get('site_mail', 'admin@example.com');
   $params = $form_values;
   $language = language_default();
