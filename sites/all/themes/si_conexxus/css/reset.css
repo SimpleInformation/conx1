@@ -24,7 +24,9 @@ body {
 }
 
 ol, ul {
-	list-style: none;
+/*	list-style: none;   */ 
+  	padding-left: 40px ;  
+
 }
 
 blockquote, q {
