@@ -1,0 +1,10 @@
+<?php
+
+function custom_views_order_form_views_exposed_form_alter(&$form, $form_state) {
+  foreach ($form_state['view']->filter as $field => $filter) {
+    if ($filter->options['exposed'] && $field == 'og_group_ref_target_id') {
+      $field_id = $form['#info']["filter-$field"]['value'];
+      asort($form[$field_id]['#options']);
+    }
+  }
+}

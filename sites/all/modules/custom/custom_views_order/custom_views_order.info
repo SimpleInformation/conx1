@@ -1,0 +1,5 @@
+name = Custom Views Order
+description = Custom Views Ordering for exposed filter
+core = 7.x
+
+package = custom
