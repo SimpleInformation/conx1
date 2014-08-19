@@ -116,6 +116,12 @@ function og_email_blast_mail($key, &$message, $params) {
       $message['headers']['Bcc'] = $params['to'];
       $message['headers']['Reply-To'] = $params['admin_email'];
       $message['subject'] = check_plain($params['subject']);
+	  // Include Author Details
+	  global $user;
+	  $user = user_load($user->uid);
+	  $userDetails = 'Author Name: '. $user->field_first_name[LANGUAGE_NONE][0]['value'].' '. $user->field_last_name[LANGUAGE_NONE][0]['value'].'<br>';
+	  $userDetails .= 'Author Email: ' . $user->mail.'<br>'; 
+	  $params['message'] = $userDetails.$params['message'];
       $message['body'][] = $params['message'];
       watchdog('og_email_blast', $params['admin'] . ' sent an e-mail blast to ' . $params['group']);
       break;

@@ -5,6 +5,8 @@ version = VERSION
 core = 7.x
 base theme = seven
 
+scripts[] = js/HideNeedsReviewFix.js
+
 stylesheets[screen][] = media-style.css
 regions[content] = Content
 regions[help] = Help
