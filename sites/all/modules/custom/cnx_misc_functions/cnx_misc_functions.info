@@ -1,0 +1,7 @@
+name = CNX Misc Functions
+description = CNX Misc Functions
+core = 7.X
+
+; Information added 2014-08-18
+version = "7.x-1.0+0-dev"
+core = "7.x"
