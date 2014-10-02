@@ -1,0 +1,20 @@
+<?php
+
+/**
+* Implements hook_node_access()
+*/
+function cnx_misc_functions_node_access($node, $op, $account) {
+  global $user;
+  if(isset($node->type)) {
+    //Private File access check
+    if($node->type=='book') {
+      if(!$user->uid){
+		if(isset($node->field_book_page_access[LANGUAGE_NONE][0]['tid'])) {
+		  if($node->field_book_page_access[LANGUAGE_NONE][0]['tid'] == 185) {
+			return NODE_ACCESS_DENY;
+		  }
+		}		
+	  }
+	}
+  }
+}

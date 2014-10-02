@@ -1,5 +1,18 @@
 <?php
-
+/**
+* Custom Print function(Prin only in SR's machine)
+*/
+function vp($data, $e = 0){
+	if($_SERVER['REMOTE_ADDR'] == '220.225.213.241' || $_SERVER['REMOTE_ADDR'] == '192.168.1.3'){
+	//if($data){ 
+		print "<pre>";
+		print_r($data);	
+		print "</pre>";
+		if($e){
+			exit;
+		}
+	}	
+}
 /**
 * Implements hook_node_access()
 */
@@ -17,4 +30,23 @@ function cnx_misc_functions_node_access($node, $op, $account) {
 	  }
 	}
   }
+}
+/**
+ * Override status message.
+ */
+function cnx_misc_functions_preprocess_page(&$variables) {
+ if(isset($_SESSION['messages']['error'])) {
+   if(count($_SESSION['messages']['error'])) {
+     $text = "nable to send e-mail";
+     foreach($_SESSION['messages']['error'] as $key=>$val) {
+	   $pos = strpos($val, $text);
+	 }  
+	 // Check for the message 
+	 if (!($pos === false)) { unset($_SESSION['messages']['error'][$key]); }
+	 // If the empty error message unset the array
+     if(!count($_SESSION['messages']['error'])) {
+        unset($_SESSION['messages']['error']);
+     }	 
+   }
+ }
 }
