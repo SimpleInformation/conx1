@@ -10,8 +10,8 @@
 function retailer_dues_menu() {
   $items = array();
   $items['admin/config/content/retailer_dues'] = array(
-    'title' => 'Base Dues config',
-    'description' => 'Configuration for Same Retailer Dues',
+    'title' => 'Base Dues configurations for Retailer',
+    'description' => 'Configuration for Retailer Base Dues',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('retailer_dues_form'),
     'access arguments' => array('access administration pages'),
