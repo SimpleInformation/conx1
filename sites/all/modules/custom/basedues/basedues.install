@@ -23,6 +23,7 @@ function basedues_install() {
   variable_set('third_tier_upper_limit',90000000);
   variable_set('third_tier_base_value',1100);
   variable_set('fourth_tier_base_value',1820);
+  variable_set('company_size_limit_value',5000000);
 }
 
 /**
@@ -35,4 +36,5 @@ function basedues_uninstall() {
   variable_del('third_tier_upper_limit');
   variable_del('third_tier_base_value');
   variable_del('fourth_tier_base_value');
+  variable_del('company_size_limit_value');
 }
