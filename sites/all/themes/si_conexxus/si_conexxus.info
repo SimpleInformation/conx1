@@ -8,6 +8,9 @@ stylesheets[all][] = css/conexxus.css
 
 scripts[] = js/menu.js
 scripts[] = js/jquery.mobilemenu.js
+scripts[] = js/HideNeedsReviewFix.js
+scripts[] = js/suplier_dues.js
+
 
 regions[header_right] = Header right
 
