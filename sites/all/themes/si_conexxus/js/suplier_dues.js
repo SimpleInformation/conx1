@@ -21,8 +21,10 @@
     var anual_sale = 0, member_level = 0;
 	anual_sale   = $('#edit-field-annual-sales-for-the-most-und-0-value').val();
 	member_level = $('#edit-field-member-level-supplier-und').val();
-	var limit = parseFloat(Drupal.settings.basedues.company_size_limit_value);
-
+	var limit =5000000;
+	if(Drupal.settings.basedues) {
+	  limit = parseFloat(Drupal.settings.basedues.company_size_limit_value);
+	}
 	if(isNaN(anual_sale)) { anual_sale = 0; $('#edit-field-annual-sales-for-the-most-und-0-value').val(0); }	
 	$('#edit-field-supplier-small-company-not').css('display','none');		
 	$('#edit-field-supplier-large-company-not').css('display','none');
