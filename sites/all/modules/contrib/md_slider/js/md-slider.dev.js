@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------------
- # MD Slider - March 18, 2013
+ # MD Slider 2.15 - March 18, 2013
  # ------------------------------------------------------------------------
  # Websites:  http://www.megadrupal.com -  Email: info@megadrupal.com
  --------------------------------------------------------------------------*/
@@ -149,6 +149,9 @@
 
         // init
         function init() {
+            if ("ActiveXObject" in window)
+                $(".md-item-opacity", self).addClass("md-ieopacity");
+
             self.addClass("loading-image");
             var slideClass = '';
             if (options.responsive)
@@ -222,9 +225,8 @@
             }
             $(window).resize(function() {
                 resizeWindow();
-            });
+            }).trigger("resize");
             preloadImages();
-            resizeWindow();
 
             // process when un-active tab
             var inActiveTime = false;
@@ -457,8 +459,44 @@
                 slideThumb.unbind("touchmove");
                 slideThumb.unbind("touchmove");
                 slideThumb.css("left", 0);
-                var thumbsWidth = $("a", slideThumb).width() * numItem;
-                var thumbDiv = slideThumb.parent().parent();
+                var thumbsWidth = 0,
+                    thumbDiv = slideThumb.parent().parent();
+
+                $("a.md-thumb-item", slideThumb).each(function() {
+
+                    if ($("img", $(this)).length > 0) {
+                        if ($("img", $(this)).css("borderLeftWidth"))
+                            thumbsWidth += parseInt($("img", $(this)).css("borderLeftWidth"), 10);
+                        if ($("img", $(this)).css("borderRightWidth"))
+                            thumbsWidth += parseInt($("img", $(this)).css("borderRightWidth"), 10);
+                        if ($("img", $(this)).css("marginLeft"))
+                            thumbsWidth += parseInt($("img", $(this)).css("marginLeft"), 10);
+                        if ($("img", $(this)).css("marginRight"))
+                            thumbsWidth += parseInt($("img", $(this)).css("marginRight"), 10);
+
+                    }
+                    else {
+                        if ($("span", $(this)).css("borderLeftWidth"))
+                            thumbsWidth += parseInt($("span", $(this)).css("borderLeftWidth"), 10);
+                        if ($("span", $(this)).css("borderRightWidth"))
+                            thumbsWidth += parseInt($("span", $(this)).css("borderRightWidth"), 10);
+                        if ($("span", $(this)).css("marginLeft"))
+                            thumbsWidth += parseInt($("span", $(this)).css("marginLeft"), 10);
+                        if ($("span", $(this)).css("marginRight"))
+                            thumbsWidth += parseInt($("span", $(this)).css("marginRight"), 10);
+                    }
+
+                    if ($(this).css("borderLeftWidth"))
+                        thumbsWidth += parseInt($(this).css("borderLeftWidth"), 10);
+                    if ($(this).css("borderRightWidth"))
+                        thumbsWidth += parseInt($(this).css("borderRightWidth"), 10);
+                    if ($(this).css("marginLeft"))
+                        thumbsWidth += parseInt($(this).css("marginLeft"), 10);
+                    if ($(this).css("marginRight"))
+                        thumbsWidth += parseInt($(this).css("marginRight"), 10);
+
+                    thumbsWidth += parseInt(self.data("thumb-width"));
+                });
 
                 $(".md-thumb-next", thumbDiv).remove();
                 $(".md-thumb-prev", thumbDiv).remove();
@@ -692,25 +730,32 @@
             if(index < 0 && options.loop) {
                 index = numItem - 1;
                 slide(index);
-            } else if(index >= 0) {
+            }
+            else if(index >= 0) {
                 slide(index);
             }
         }
         function endMoveCaption(caption) {
+            var easeout = (caption.data("easeout")) ? caption.data("easeout") : "",
+                ieVersion = (!! window.ActiveXObject && +(/msie\s(\d+)/i.exec(navigator.userAgent)[1])) || NaN;
+
+            if (ieVersion != NaN)
+                ieVersion = 11;
+            else
+                ieVersion = parseInt(ieVersion);
+
             clearTimeout(caption.data('timer-start'));
-            if ($.browser.msie && parseInt($.browser.version) <= 9) {
+            if (easeout != "" && easeout != "keep" && ieVersion <= 9)
                 caption.fadeOut();
-            } else {
+            else {
                 caption.removeClass(effectsIn.join(' '));
-                var easeout = caption.data("easeout");
-                if(easeout) {
+                if(easeout != "") {
                     if(easeout == "random")
                         easeout = effectsOut[Math.floor(Math.random() * e_out_length)];
                     caption.addClass(easeout);
-
-                } else {
-                    caption.hide();
                 }
+                else
+                    caption.hide();
             }
         }
         function removeTheCaptions(oItem) {
@@ -726,7 +771,14 @@
                 var caption = $(this);
                 if(caption.data("easeout"))
                     caption.removeClass(effectsOut.join(' '));
-                var easein = caption.data("easein") ? caption.data("easein") : "";
+                var easein = caption.data("easein") ? caption.data("easein") : "",
+                    ieVersion = (!! window.ActiveXObject && +(/msie\s(\d+)/i.exec(navigator.userAgent)[1])) || NaN;
+
+                if (ieVersion != NaN)
+                    ieVersion = 11;
+                else
+                    ieVersion = parseInt(ieVersion);
+
                 if(easein == "random")
                     easein = effectsIn[Math.floor(Math.random() * e_in_length)];
 
@@ -734,16 +786,14 @@
                 caption.hide();
                 if(caption.data("start") != undefined) {
                     caption.data('timer-start', setTimeout(function() {
-                        if (easein == "" || ($.browser.msie && parseInt($.browser.version) <= 9)) {
+                        if (easein != "" && ieVersion <= 9)
                             caption.fadeIn();
-                        } else {
+                        else
                             caption.show().addClass(easein);
-                        }
-
                     }, caption.data("start")));
-                } else {
-                    caption.show().addClass(easein);
                 }
+                else
+                    caption.show().addClass(easein);
 
                 if(caption.data("stop") != undefined) {
                     caption.data('timer-stop', setTimeout(function() {
@@ -1286,6 +1336,7 @@
                 $(".md-objects", self).width(slideWidth);
             wrap.height(slideHeight);
             $(".md-slide-item", self).height(slideHeight);
+
             resizeBackgroundImage();
             resizeThumbDiv();
             resizeFontSize();
@@ -1295,12 +1346,16 @@
         function resizeBackgroundImage() {
             $(".md-slide-item", self).each(function() {
                 var $background = $(".md-mainimg img", this);
-                if($background.data("defW") && $background.data("defH")) {
-                    var width = $background.data("defW"),
-                        height = $background.data("defH");
-                    changeImagePosition($background, width, height);
 
+                if ($background.length == 1) {
+                    if($background.data("defW") && $background.data("defH")) {
+                        var width = $background.data("defW"),
+                            height = $background.data("defH");
+                        changeImagePosition($background, width, height);
+                    }
                 }
+                else
+                    $(".md-mainimg", $(this)).width($(".md-slide-item:visible", self).width()).height($(".md-slide-item:visible", self).height())
             });
         }
         function preloadImages() {
@@ -1416,7 +1471,10 @@
             var dimensions = {height: newImg.height, width: newImg.width};
             return dimensions;
         }
-        init();
+
+        $(document).ready(function() {
+            init();
+        })
     }
     $.fn.reverse = [].reverse;
     //Image Preloader Function
@@ -1460,5 +1518,67 @@
             this.bAbort = true;
             this.oImagePreload.OnComplete()
         }
+    }
+    $.fn.mdvideobox = function (opt) {
+        $(this).each(function() {
+            function init() {
+                if($("#md-overlay").length == 0) {
+                    var  _overlay = $('<div id="md-overlay" class="md-overlay"></div>').hide().click(closeMe);
+                    var _container = $('<div id="md-videocontainer" class="md-videocontainer"><div id="md-video-embed"></div><div class="md-description clearfix"><div class="md-caption"></div><a id="md-closebtn" class="md-closebtn" href="#"></a></div></div>');
+                    _container.css({'width': options.initialWidth + 'px', 'height': options.initialHeight + 'px', 'display': 'none'});
+                    $("#md-closebtn", _container).click(closeMe);
+                    $("body").append(_overlay).append(_container);
+                }
+                overlay = $("#md-overlay");
+                container = $("#md-videocontainer");
+                videoembed = $("#md-video-embed", container);
+                caption = $(".md-caption", container);
+                element.click(activate);
+            }
+
+            function closeMe()
+            {
+                overlay.fadeTo("fast", 0, function(){$(this).css('display','none')});
+                videoembed.html('');
+                container.hide();
+                return false;
+            }
+
+            function activate()
+            {
+                options.click.call();
+                overlay.css({'height': $(window).height()+'px'});
+                var top = ($(window).height() / 2) - (options.initialHeight / 2);
+                var left = ($(window).width() / 2) - (options.initialWidth / 2);
+                container.css({top: top, left: left}).show();
+                videoembed.css({'background': '#fff url(css/loading.gif) no-repeat center', 'height': options.contentsHeight, 'width': options.contentsWidth});
+                overlay.css('display','block').fadeTo("fast", options.defaultOverLayFade);
+                caption.html(title);
+                videoembed.fadeIn("slow",function() { insert(); });
+                return false;
+            }
+
+            function insert()
+            {
+                videoembed.css('background','#fff');
+                embed = '<iframe src="' + videoSrc + '" width="' + options.contentsWidth + '" height="' + options.contentsHeight + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+                videoembed.html(embed);
+            }
+
+            var options = $.extend({
+                initialWidth: 640,
+                initialHeight: 400,
+                contentsWidth: 640,
+                contentsHeight: 350,
+                defaultOverLayFade: 0.8,
+                click: function() {}
+            }, opt);
+            var overlay, container, caption, videoembed, embed;
+            var element = $(this);
+            var videoSrc = element.attr("href");
+            var title = element.attr("title");
+            //lets start it
+            init();
+        });
     }
 })(jQuery);

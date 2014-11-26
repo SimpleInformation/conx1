@@ -69,24 +69,32 @@ background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAI
 	-ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=0,Color=#59000000,Positive=true)";
 	filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=0,Color=#59000000,Positive=true);
 }
-.text-white-shadow p {
+.text-white-shadow a,
+.text-white-shadow div,
+.md-object.text-white-shadow {
 	text-shadow:0px 1px 0px rgba(255,255,255,0.5);
 	-ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#80ffffff,Positive=true)";zoom:1;
 	filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#80ffffff,Positive=true);
 }
-.text-black-shadow p {
+.text-black-shadow a,
+.text-black-shadow div,
+.md-object.text-black-shadow {
 	text-shadow:0px 1px 0px rgba(0,0,0,0.5);
 	-ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#80000000,Positive=true)";zoom:1;
 	filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#80000000,Positive=true);
 }
 
-.text-white-shadow2 p {
+.text-white-shadow2 a
+.text-white-shadow2 div,
+.md-object.text-white-shadow2 {
 	text-shadow:0px -1px 0px rgba(255,255,255,0.5);
 	-ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=-1,Color=#80ffffff,Positive=true)";zoom:1;
 	filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=-1,Color=#80ffffff,Positive=true);
 }
 
-.text-black-shadow2 p {
+.text-black-shadow2 a,
+.text-black-shadow2 div,
+.md-object.text-black-shadow2 {
 	text-shadow:0px -1px 0px rgba(0,0,0,0.5);
 	-ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=-1,Color=#80000000,Positive=true)";zoom:1;
 	filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=-1,Color=#80000000,Positive=true);

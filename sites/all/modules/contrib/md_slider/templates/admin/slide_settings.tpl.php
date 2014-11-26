@@ -9,7 +9,9 @@
   <div class="cuteslider-popup clearfix">
     <div id="slide-setting-tabs" class="cs-popup-tabs clearfix">
       <div class="slide-setting clearfix">
-        <h3>Slide settings</h3>
+        <div class="disable-slide">
+          <input id="disable-slide" type="checkbox" name="disable_slide"><label for="disable-slide">Disable this slide</label>
+        </div>
         <div class="choose-image">
           <a class="slide-choose-image-link" href="#">[Choose image]</a>
           <div id="slide-background-preview" style="position: relative">
@@ -18,10 +20,7 @@
           </div>
         </div>
         <input type="hidden" id="slide-backgroundimage">
-        <div class="choose-slide-bg-color clearfix">
-          <input type="hidden" id="slide-background-color" class="mdt-background mdt-input" value="" name="slide-background-color">
-          <label style="float: left">Background Color</label>
-        </div>
+
         <div class="choose-thumbnail">
           <a class="slide-choose-thumbnail-link" href="#">[Choose thumbnail]</a>
           <div id="slide-thumbnail-preview" style="position: relative">
@@ -29,6 +28,12 @@
             <a class="delete-thumbnail" href="#"></a>
           </div>
         </div>
+
+        <div class="choose-slide-bg-color clearfix">
+          <input type="hidden" id="slide-background-color" class="mdt-background mdt-input" value="" name="slide-background-color">
+          <label style="float: left">Background Color</label>
+        </div>
+
         <input type="hidden" id="slide-thumbnail">
       </div><!-- / .slide-setting -->
       <div class="transition">

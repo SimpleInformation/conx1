@@ -81,6 +81,17 @@ function template_preprocess_admin_layers_render(&$variables) {
     $style[] = "height: {$layer['height']}px;";
     $style[] = "top: {$layer['top']}px;";
     $style[] = "left: {$layer['left']}px;";
+
+    if ($layer["type"] == "text" && isset($layer["fontweight"]) && $layer["fontweight"] != "") {
+        if (is_numeric($layer["fontweight"]) === FALSE) {
+            $font_w = substr($layer["fontweight"], 0, 3);
+            $font_s = substr($layer["fontweight"], 3);
+            $style[] = "font-weight: {$font_w};\n";
+            $style[] = "font-style: {$font_s};\n";
+        }
+        else
+            $style[] = "font-weight: {$layer["fontweight"]};\n";
+    }
     $variables['styles'] = implode(' ', $style);
 }
 
@@ -128,8 +139,7 @@ function template_preprocess_admin_slides_render(&$variables) {
 
     foreach ($slides as &$slide) {
         $slide->settings["slide_id"] = $slide->sid;
-        if ($slide->settings['background_image'] != -1) {
-            $background = file_load($slide->settings['background_image']);
+        if ($slide->settings['background_image'] != -1 && ($background = file_load($slide->settings['background_image']))) {
             if ($slider->settings['create_bg_imgstyle'])
                 $slide->background_url = image_style_url('md_slider_' . $slider->slid . '_bg', $background->uri);
             else
@@ -144,5 +154,4 @@ function template_preprocess_admin_slides_render(&$variables) {
       if (empty($slide->background_url) && isset($slide->settings["background_color"]) && $slide->settings["background_color"] != "")
         $slide->background_style[] = "background-color: {$slide->settings["background_color"]}";
     }
-
 }

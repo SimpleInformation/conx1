@@ -45,7 +45,8 @@ function md_slider_features_export_render($module_name, $data, $export = NULL) {
   $code[] = "\t\$slider = (object)\$slider;";
   $code[] = "\t\$slider = _md_slider_recast('MDSlider',\$slider);";
   $code[] = "\t\$slider->slid = NULL;\n";
-  $code[] = "\t\$slider->save();";
+  $code[] = "\tif (!MDSlider::get_by_machine_name(\$slider->machine_name))";
+  $code[] = "\t\t\$slider->save();";
   $code[] = "}";
   return array("install" => implode("\n", $code));
 }

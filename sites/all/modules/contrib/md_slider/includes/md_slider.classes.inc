@@ -193,6 +193,7 @@ class MDSlider {
             'bar_position' => 'bottom',
             'show_next_prev_button' => 1,
             'auto_play' => 1,
+            'pause_hover' => 1,
             'show_bullet' => 1,
             'bullet_position' => 5,
             'show_thumbnail' => 1,
@@ -208,6 +209,8 @@ class MDSlider {
             'dmf_google' => '',
             'enable_font_css' => 0,
             'generate_css_file' => 0,
+            "on_start" => "",
+            "on_end" => "",
             'color_saved' => 'ff9900,CC0000',
         );
 
@@ -382,6 +385,7 @@ class MDSlide {
             'background_color' => "",
             'timelinewidth' => 80,
             'custom_thumbnail' => -1,
+            'disabled' => 0,
             "transitions" => array(),
         );
 

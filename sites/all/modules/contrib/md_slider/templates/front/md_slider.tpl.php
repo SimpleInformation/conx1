@@ -13,13 +13,5 @@
 </div>
 
 <?php
-$js_control = "(function($) {
-      $(document).ready(function() {
-          effectsIn = Drupal.settings.inEffects;
-          effectsOut = Drupal.settings.outEffects;
-          var options = Drupal.settings.md_slider_options_{$slider->slid};
-          $('#md-slider-{$slider->slid}-{$type}').mdSlider(options);
-      });
-    })(jQuery);";
-drupal_add_js($js_control, 'inline');
+
 ?>
