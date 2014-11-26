@@ -49,9 +49,6 @@
             <a class="tab-link" href="#tabs-1"><span class="tab-text">Slide 1</span></a>
             <span class="ui-icon ui-icon-close">Remove Tab</span>
         </li>
-      <li class="tab-item clearfix">
-        <a class="add" href="#">+</a>
-      </li>
     </ul>
     <div class="add-tab">
       <a id="add_tab" class="add" href="#">+</a>
@@ -61,7 +58,7 @@
         <div class="settings">
           <a href="#" class="panel-settings-link">[Settings]</a> &nbsp;
           <a class="panel-clone" href="#">[Clone slide]</a>
-          <input type="hidden" autocomplete="off" class="panelsettings" value='{"slide_id": -1, "background_image": -1, "custom_thumbnail": -1, "transitions": [], "background_color": ""}' /></div>
+          <input type="hidden" autocomplete="off" class="panelsettings" value='{"slide_id": -1, "background_image": -1, "custom_thumbnail": -1, "transitions": [], "background_color": "", "disabled": 0}' /></div>
         <div class="md-slidewrap<?php print $class_fullwidth;?>" style="height: <?php print $slider->settings['height'];?>px;<?php if(!$slider->settings['full_width']): print 'width:' . $slider->settings['width'] . 'px'; endif; ?>">
             <div class="md-slide-image" style="height: <?php print $slider->settings['height'];?>px;<?php if(!$slider->settings['full_width']): print 'width:' . $slider->settings['width'] . 'px'; endif; ?>"></div>
             <div class="md-objects" style="width: <?php print $slider->settings['width'];?>px; height: <?php print $slider->settings['height'];?>px;">

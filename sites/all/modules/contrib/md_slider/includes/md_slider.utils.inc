@@ -220,7 +220,7 @@ function md_slider_generate_layer_link_css($link) {
 
     if ($link['transparent'] != '' && is_numeric($link['transparent'])) {
         $opacity = $link['transparent'] / 100;
-        $output[] = "opacity: {$opacity};\n-ms-filter:\"progid:DXImageTransform.Microsoft.Alpha(Opacity={$link['transparent']})\";\nfilter: alpha(opacity={$link['transparent']});\n";
+        $output[] = "-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity={$link['transparent']})'; filter: alpha(opacity={$link['transparent']}); opacity: {$opacity};";
     }
 
     if ($link['border'] != '') {

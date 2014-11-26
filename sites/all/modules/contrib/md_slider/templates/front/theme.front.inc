@@ -10,7 +10,7 @@
     $options = array();
     $slider = $variables['slider'];
     $variables['slides'] = MDSlide::get_by_slider_id($slider->slid);
-    $settings = $slider->settings;
+    $settings = array_merge(MDSlider::get_default_settings(), $slider->settings);
 
     # Create options for slider
     $options['fullwidth'] = (boolean)$settings['full_width'];
@@ -19,6 +19,7 @@
     $options['height'] = $settings['height'];
     $options['enableDrag'] = (boolean)$settings['touch_swipe'];
     $options['responsive'] = (boolean)$settings['responsive'];
+    $options['pauseOnHover'] = (boolean)$settings['pause_hover'];
     if (isset($settings['loop']))
 	  $options['loop'] = (boolean)$settings['loop'];
     else
@@ -64,33 +65,37 @@
     // Add data transitions for slide
     if (!empty($slide->settings["transitions"]))
       $data_properties[] = 'data-transition="' . implode(",", $slide->settings["transitions"]) . '"';
-    $variables['background_style'] = "";
-    if ($slide->settings['background_image'] != -1) {
-      # Load background image
-      $background = file_load($slide->settings['background_image']);
-      $create_bg_imgs = $variables['slider_settings']['create_bg_imgstyle'];
-      if ($create_bg_imgs) {
-        $variables['background_url'] = image_style_url('md_slider_' . $slide->slid . '_bg', $background->uri);
-      } else {
-        $variables['background_url'] = file_create_url($background->uri);
-      }
 
-      # Load thumbnail image
-      if ($slide->settings['custom_thumbnail'] != -1) {
+    // Process background settings
+    $variables['background_style'] = "";
+    if ($slide->settings['background_image'] != -1 && ($background = file_load($slide->settings['background_image']))) {
+      // Load background image
+      $create_bg_imgs = $variables['slider_settings']['create_bg_imgstyle'];
+      if ($create_bg_imgs)
+        $variables['background_url'] = image_style_url('md_slider_' . $slide->slid . '_bg', $background->uri);
+      else
+        $variables['background_url'] = file_create_url($background->uri);
+
+      // Load thumbnail image
+      if ($slide->settings['custom_thumbnail'] != -1)
         $thumb = file_load($slide->settings['custom_thumbnail']);
-      }
-      else {
+      else
         $thumb = $background;
-      }
+
       $thumb_data = image_style_url('md_slider_' . $slide->slid . '_thumb', $thumb->uri);
       $data_properties[] = "data-thumb-type='image'";
     }
     else {
       // use background color
-      $style = array("height: {$variables["slider_settings"]["height"]}px");
+      if (!$variables["slider_settings"]["responsive"])
+        $style = array("height: {$variables["slider_settings"]["height"]}px");
+      else
+        $style = array("height: 100%");
 
-      if (!$variables["slider_settings"]["full_width"])
+      if (!$variables["slider_settings"]["full_width"] && !$variables["slider_settings"]["responsive"])
         $style[] = "width: {$variables["slider_settings"]["width"]}px";
+      else
+        $style[] = "width: 100%";
 
       if ($slide->settings["background_color"] != "") {
         if (strpos($slide->settings["background_color"], "rgba") !== FALSE) {
@@ -102,7 +107,6 @@
         }
         $style[] = "background-color: {$slide->settings["background_color"]}";
       }
-
       $variables['background_style'] = implode("; ", $style);
 
       if ($slide->settings['custom_thumbnail'] != -1) {
@@ -156,11 +160,8 @@
       }
     }
 
-
-    if ($layer['type'] == 'video') {
+    if ($layer['type'] == 'video')
       $layer['url'] = md_slider_generate_video_embeded_url($layer['fileid']);
-    }
-
     $variables['data'] = process_element_data($layer);
 
 
@@ -180,7 +181,7 @@
     }
     if (isset($layer["opacity"]) && intval($layer["opacity"]) != 100) {
       $percent = intval($layer["opacity"])/100;
-      $layer["opacity"] = "opacity: {$percent};-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity={$layer["opacity"]});filter: alpha(opacity={$layer["opacity"]});";
+      $layer["opacity"] = "-ms-filter:'progid:DXImageTransform.Microsoft.Alpha(Opacity={$layer["opacity"]})'; filter: alpha(opacity={$layer["opacity"]}); opacity: {$percent};";
     }
     else
       $layer["opacity"] = "";

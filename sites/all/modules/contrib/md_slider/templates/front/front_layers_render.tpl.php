@@ -7,18 +7,18 @@
  */
 ?>
 <?php if(!empty($layer->opacity)):?>
-<div  <?php print "style=\"{$layer->opacity}\""?>>
+<div class="md-item-opacity" <?php print "style=\"{$layer->opacity}\""?>>
 <?php endif;?>
   <div class="<?php print $class; ?>" <?php print $data; ?>>
     <?php if ($layer->type == 'text'): ?>
         <?php if (isset($link)):?>
-            <a href="<?php print $link;?>"><?php print $layer->title;?></a>
+            <a href="<?php print $link;?>"<?php if (isset($layer->link["target"]) && !empty($layer->link["target"])) print " target='{$layer->link["target"]}'";?>><?php print $layer->title;?></a>
         <?php else:?>
             <?php print $layer->title;?>
         <?php endif; ?>
     <?php elseif ($layer->type == 'image'): ?>
         <?php if (isset($link)):?>
-            <a href="<?php print $link;?>">
+            <a href="<?php print $link;?>"<?php if (isset($layer->link["target"]) && !empty($layer->link["target"])) print " target='{$layer->link["target"]}'";?>>
                 <img src="<?php print $layer->url;?>" alt="<?php print htmlentities($layer->title, ENT_QUOTES, "UTF-8");?>" />
             </a>
         <?php else:?>

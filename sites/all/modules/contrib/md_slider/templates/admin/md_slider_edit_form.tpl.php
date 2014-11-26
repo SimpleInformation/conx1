@@ -179,18 +179,16 @@
       <a href="#" class="mdt-link-close"></a>
       <input type="text" value="" name="" class="mdt-text mdt-link-value"/>
       <input type="text" value="" name="" class="mdt-text mdt-link-title"/>
-
-      <a class="mdt-link-color mdt-edit-color" title="Hover text color"></a>
+      <select class="mdt-select mdt-link-target">
+        <option value="">None</option>
+        <option value="_blank">_blank</option>
+        <option value="_self">_self</option>
+        <option value="_parent">_parent</option>
+        <option value="_top">_top</option>
+      </select>
       <div class="link-color-wrap"><input type="hidden" id="link-color" class="link-color" value="" name="link-color"></div>
-
-
-      <a class="mdt-link-background mdt-edit-color" title="Hover background color"></a>
       <div class="link-background-wrap"><input type="hidden" id="link-background" class="link-background" value="" name="link-background"></div>
-
-      <input type="text" value="" maxlength="3" name="link-background-transparent"
-             class="mdt-text link-background-transparent"/>
-
-      <a class="mdt-link-border mdt-edit-color" title="Hover border color"></a>
+      <input type="text" value="" maxlength="3" name="link-background-transparent"  class="mdt-text link-background-transparent"/>
       <div class="link-border-wrap"><input type="hidden" id="link-border" class="link-border" value="" name="link-border"></div>
 
 
@@ -237,7 +235,7 @@
     <a class="panel-settings-link" href="#">[Settings]</a> &nbsp;
     <!--      <a class="custom-thumbnail-setting" href="#">[Choose thumbnail image]</a> &nbsp;-->
     <a class="panel-clone" href="#">[Clone slide]</a>
-    <input class="panelsettings" type="hidden" value='{"slide_id": -1, "background_image": -1,"background_color": "" ,"custom_thumbnail": -1, "transitions": []}' autocomplete="off">
+    <input class="panelsettings" type="hidden" value='{"slide_id": -1, "background_image": -1,"background_color": "" ,"disabled": 0, "custom_thumbnail": -1, "transitions": []}' autocomplete="off">
   </div>
   <div class="md-slidewrap<?php print $class_fullwidth; ?>" style="height: <?php print $slider->settings['height']; ?>px; <?php if (!$slider->settings['full_width']): print 'width:' . $slider->settings['width'] . 'px'; endif; ?>">
     <div class="md-slide-image" style="height: <?php print $slider->settings['height']; ?>px; <?php if (!$slider->settings['full_width']): print 'width:' . $slider->settings['width'] . 'px'; endif; ?>"></div>

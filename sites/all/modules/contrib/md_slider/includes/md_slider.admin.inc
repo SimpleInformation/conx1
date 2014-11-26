@@ -169,12 +169,18 @@ function md_slider_configure_form($form, &$form_state, $slid = NULL) {
         '#title' => t('Enable loop'),
         '#default_value' => $settings['loop'],
     );
+  $form['sls_settings']['pause_hover'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Pause on hover'),
+    '#default_value' => $settings['pause_hover'],
+  );
 
     $form['sls_settings']['videobox'] = array(
-        '#type' => 'checkbox',
-        '#title' => t('View video on lightbox'),
-        '#default_value' => $settings['videobox'],
-    );
+    '#type' => 'checkbox',
+    '#title' => t('View video on lightbox'),
+    '#default_value' => $settings['videobox'],
+  );
+
 
     $form['sls_settings']['sls_ldbar'] = array(
         '#type' => 'radios',
@@ -323,6 +329,20 @@ function md_slider_configure_form($form, &$form_state, $slid = NULL) {
         '#title' => t("Generate css file."),
         '#default_value' => $settings['generate_css_file'],
     );
+    $form["sls_settings"]["on_start"] = array(
+        "#type" => "textarea",
+        "#title" => t("TransitionStart callback"),
+        "#default_value" => $settings['on_start'],
+        "#description" => t("Callback function when start change slide.Example: function() {//Code in here}"),
+        "#resizable" => FALSE,
+    );
+    $form["sls_settings"]["on_end"] = array(
+        "#type" => "textarea",
+        "#title" => t("TransitionEnd callback"),
+        "#default_value" => $settings['on_end'],
+        "#description" => t("Callback function when end change slide. Example: function() {//Code in here}"),
+        "#resizable" => FALSE,
+    );
 
     $form['sls_create'] = array(
         '#type' => 'submit',
@@ -369,6 +389,7 @@ function md_slider_configure_form_submit($form, &$form_state) {
     $settings['bar_position'] = $custom['sls_bar_position'];
     $settings['show_next_prev_button'] = $custom['show_next_prev_button'];
     $settings['auto_play'] = $custom['auto_play'];
+    $settings['pause_hover'] = $custom['pause_hover'];
     $settings['show_bullet'] = $custom['show_bullet'];
     $settings['bullet_position'] = $custom['bullet_position'];
     $settings['show_thumbnail'] = $custom['show_thumbnail'];
@@ -383,6 +404,8 @@ function md_slider_configure_form_submit($form, &$form_state) {
     $settings['dmf_google'] = $custom['dmf_google'];
     $settings['enable_font_css'] = $custom['enable_font_css'];
     $settings['generate_css_file'] = $custom['generate_css_file'];
+    $settings['on_start'] = $custom['on_start'];
+    $settings['on_end'] = $custom['on_end'];
     $settings["videobox"] = $custom["videobox"];
 
     // Create new slider or update existed slider to database
@@ -620,6 +643,7 @@ function md_slider_edit_form_submit($form, &$form_state) {
         $settings['custom_thumbnail'] = $slide->itemsetting['custom_thumbnail'];
         $settings['transitions'] = $slide->itemsetting['transitions'];
         $settings['background_color'] = $slide->itemsetting['background_color'];
+        $settings['disabled'] = isset($slide->itemsetting['disabled']) ? $slide->itemsetting['disabled'] : 0;
 
         # Generate css class for layers in slide
         foreach ($slide->boxitems as $key => &$layer) {
