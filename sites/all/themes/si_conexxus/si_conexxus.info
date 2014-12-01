@@ -8,7 +8,7 @@ stylesheets[all][] = css/conexxus.css
 
 scripts[] = js/menu.js
 scripts[] = js/jquery.mobilemenu.js
-scripts[] = js/HideNeedsReviewFix.js
+scripts[] = js/HideNeedsReview.js
 scripts[] = js/suplier_dues.js
 
 
@@ -20,6 +20,7 @@ regions[hp_midtop] = Hp mid top
 regions[hp_righttop] = Hp right top
 regions[hp_midbot] = Hp mid bot
 regions[hp_rightbot] = Hp right bot
+regions[hp_content_top] = Hp content Top
 regions[hp_content] = Hp content
 
 regions[banner] = Banner

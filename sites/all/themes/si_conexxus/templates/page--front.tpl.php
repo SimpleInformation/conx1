@@ -67,6 +67,11 @@
     <div class="row">
     	<div class="sixteen columns"><hr></div>
     </div>
+	<div class="content-top">
+	    <?php if ($page['hp_content']): ?>
+        	<?php print render($page['hp_content_top']); ?>
+    	<?php endif; ?>
+	</div>
     
     <div class="row">
     	<div class="twelve columns event">
