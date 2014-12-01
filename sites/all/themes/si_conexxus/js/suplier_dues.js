@@ -66,5 +66,18 @@
 		$('#edit-field-supplier-large-company-not').css('display','none');	
 	}
   }
+
 })(jQuery);
 
+jQuery( document ).ready(function() {
+    var height = 0;
+    var	newheight = 0;
+    jQuery('.content-top .block-views').each(function() {
+	  newheight = jQuery(this).height();
+	  if(height < newheight) {
+	    height = newheight;
+	  }		
+	  jQuery('.content-top .block').css('height',height+'px');
+	  jQuery('.content-top').css('height',newheight+'px');
+	});	
+});

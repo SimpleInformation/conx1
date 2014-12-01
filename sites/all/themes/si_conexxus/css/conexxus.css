@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 @import "reset.css";
 
 html {
@@ -95,6 +94,14 @@ ul.menu li {
 .login ul li a:hover, .login ul li a:active, .login ul li a:focus {
 	color: #f18b21;
 }
+	div#block-views-news-feed-block-1 {
+		float:left;
+		width: 49%;
+	}
+	#block-views-event-calendar-block-1 {
+		float:right;
+		width: 49%;
+	}
 #main-nav {
 	padding-top: 20px;
 	float: right;
@@ -358,9 +365,31 @@ only screen and (max-width: 760px),
 		padding-right: 10px; 
 		white-space: nowrap;
 	}
+		div#block-views-news-feed-block-1 {
+			float:none;
+			width:100%;
+		}
+		#block-views-event-calendar-block-1 {
+			float:none;
+			width:100%;
+		}
+		.content-top { 
+		  height:auto !important;
+		}
 }
 /* tablets */
 @media only screen and (min-width: 768px) and (max-width: 959px) {
+		div#block-views-news-feed-block-1 {
+			float:none;
+			width:100%;
+		}
+		#block-views-event-calendar-block-1 {
+			float:none;
+			width:100%;
+		}
+	.content-top { 
+	  height:auto !important;
+	}
 }
 
 /* Mobile Portrait Size and Mobile Landscape Size (devices and browsers) */
@@ -402,4 +431,66 @@ only screen and (max-width: 760px),
 	#main-nav li li a, #main-nav li li a:visited {
 		color: #000;
 	}
+		div#block-views-news-feed-block-1 {
+			float:none;
+			width:100%;
+		}
+		#block-views-event-calendar-block-1 {
+			float:none;
+			width:100%;
+		}
+		.content-top { 
+		  height:auto !important;
+		}
 }
+
+#block-views-news-feed-block-1, #block-views-event-calendar-block-1{
+	margin-bottom:10px;
+}
+div#block-views-news-feed-block-1 , #block-views-event-calendar-block-1{
+	border: 1px solid #ccc;
+
+	/* padding: 10px; */
+}
+#block-views-news-feed-block-1 h2, #block-views-event-calendar-block-1 h2{
+	background: #f29637;
+	color: #fff;
+	padding: 10px;
+}
+#block-views-news-feed-block-1 .content , #block-views-event-calendar-block-1 .content{
+	padding: 10px;
+	padding: 1;
+}
+#block-views-news-feed-block-1 .views-row , #block-views-event-calendar-block-1 .views-row{
+	margin-bottom: 10px;
+	min-height:50px;
+}
+#block-views-news-feed-block-1 .views-field, #block-views-event-calendar-block-1 .views-field {
+	margin-bottom: 6px;
+}
+	#block-views-news-feed-block-1 .views-row {
+		margin-bottom: 10px;
+		background: url('../images/news.png');
+		background-repeat: no-repeat;
+		background-position: left top; 
+		padding-left: 42px;
+	}
+	#block-views-event-calendar-block-1 .views-row {
+		margin-bottom: 10px;
+		background: url('../images/events.png');
+		background-repeat: no-repeat; 
+		background-position: left top;
+		padding-left: 42px;
+	}
+	.content-top {
+		margin: 0px 10px;
+		padding: 0px;
+		padding-bottom: 19px;
+		border-bottom: 3px solid #78787a;
+	}
+	input#edit-submit-event-calendar{
+		margin-top: 30px;
+	}
+	.not-front.page-event-calendar .main-content {
+		width:940px;
+	}
