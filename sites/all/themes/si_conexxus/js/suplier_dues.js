@@ -77,7 +77,7 @@ jQuery( document ).ready(function() {
 	  if(height < newheight) {
 	    height = newheight;
 	  }		
-	  jQuery('.content-top .block').css('height',height+'px');
-	  jQuery('.content-top').css('height',newheight+'px');
 	});	
+	jQuery('.content-top .block').css('height',height+'px');
+	jQuery('.content-top').css('height',newheight+'px');
 });
