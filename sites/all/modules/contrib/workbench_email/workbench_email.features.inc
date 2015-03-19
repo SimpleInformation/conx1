@@ -15,7 +15,12 @@ function workbench_email_features_export_options() {
   $workbench_emails = workbench_email_get();
   foreach ($workbench_emails as $transition_label => $email_transition_set) {
     foreach ($email_transition_set as $rid => $email_transition) {
-      $role = user_role_load($rid);
+      if ($rid == WORKBENCH_EMAIL_AUTHOR) {
+        $role = workbench_email_get_author_role();
+      }
+      else {
+        $role = user_role_load($rid);
+      }
       $options[$email_transition->from_name . ':' . $email_transition->to_name . '::' . str_replace('_', ' ', strtolower($role->name))] = $role->name . ': ' . $email_transition->from_name . ' to ' . $email_transition->to_name;
     }
   }
@@ -43,7 +48,7 @@ function workbench_email_features_export($data, &$export, $module_name) {
 /**
  * Implements COMPONENT_features_export_render().
  *
- * Render workflow email transitions as code.
+ * Render workbench email transitions as code.
  */
 function workbench_email_features_export_render($module_name, $data) {
   $items = array();
@@ -51,9 +56,12 @@ function workbench_email_features_export_render($module_name, $data) {
   foreach ($data as $transition) {
     list($from_name, $to_name) = explode(':', $transition);
     $transition_role = explode('::', $transition);
-    $role = user_role_load_by_name($transition_role[1]);
+    $role = workbench_email_get_role_by_name($transition_role[1]);
+    // Message / Subject are not outputted. Since they are text values
+    // and could change once pushed to production environment. Meaning
+    // feature would remain in an overridden state.
     $item = db_select('workbench_emails', 'we')
-      ->fields('we', array('from_name', 'to_name'))
+      ->fields('we', array('from_name', 'to_name', 'author', 'automatic'))
       ->condition('from_name', $from_name)
       ->condition('to_name', $to_name)
       ->condition('rid', $role->rid)
@@ -86,10 +94,9 @@ function workbench_email_features_revert($module) {
  */
 function workbench_email_features_rebuild($module) {
   $defaults = features_get_default('workbench_email', $module);
-  workbench_email_delete_all();
   foreach ($defaults as $machine_name => $transition) {
-    $role = user_role_load_by_name($transition['role']);
-    workbench_email_save((object) $transition, $role->rid);
+    $role = workbench_email_get_role_by_name($transition['role']);
+    workbench_email_save((object) $transition, $role->rid, NULL, NULL, $transition['author'], $transition['automatic']);
   }
   drupal_static_reset('workbench_email');
 }
