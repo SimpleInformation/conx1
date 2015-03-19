@@ -3,13 +3,11 @@ description = A field formatter providing a widget for exporting events to vario
 core = 7.x
 
 dependencies[] = date
+dependencies[] = entity
 
-files[] = addtocal.css
-files[] = addtocal.js
-
-; Information added by drupal.org packaging script on 2013-09-30
-version = "7.x-1.0-beta3+1-dev"
+; Information added by Drupal.org packaging script on 2015-01-06
+version = "7.x-1.0-beta3+20-dev"
 core = "7.x"
 project = "addtocal"
-datestamp = "1380552680"
+datestamp = "1420587782"
 
