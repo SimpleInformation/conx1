@@ -46,7 +46,7 @@ function _views_fetch_data($table = NULL, $move = TRUE, $reset = FALSE) {
         else {
           // If there is still no information about that table, it is missing.
           // Write an empty array to avoid repeated rebuilds.
-          views_cache_set($cid, array(), FALSE);
+          views_cache_set($cid, array(), TRUE);
         }
       }
     }
