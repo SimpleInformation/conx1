@@ -1,6 +1,6 @@
 
 CONTENTS OF THIS FILE
-——————————HELLO WORLDS
+——————————HELLO WORLDS!
 
  * Requirements and notes
  * Optional server requirements
