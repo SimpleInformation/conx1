@@ -130,7 +130,7 @@
     /* Note: Design for a width of 320px */
 
     @media only screen and (max-width: 767px) {
-    width: 98% !important; }
+        .container { width: 300px; }
         .container .columns,
         .container .column { margin: 0; }
 
@@ -152,38 +152,8 @@
         .container .fifteen.columns,
         .container .sixteen.columns,
         .container .one-third.column,
-        .container .two-thirds.column  { width: 100% !important; }
-		
-		body {
-			line-height: 1;
-			padding: 0 5px;
-		}
+        .container .two-thirds.column  { width: 300px; }
 
-		#main-nav {
-			float: none;
-			padding-top: 10px;
-		}
-		
-		#main-nav ul {
-			padding: 0;
-			position: static !important;
-			width: 100% !important;
-		}
-		
-		
-		#main-nav ul.menu a {
-			background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
-			border: medium none;
-			color: #fff;
-			margin: 0 auto;
-			padding: 10px 0;
-			text-align: center;
-			width: 100%;
-		}
-
-		#main-nav li ul li.last a, #main-nav li ul li.last a:visited {
-			border-bottom: medium none;
-		}
         /* Offsets */
         .container .offset-by-one,
         .container .offset-by-two,
