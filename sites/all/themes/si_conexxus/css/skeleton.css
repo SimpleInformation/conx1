@@ -130,7 +130,10 @@
     /* Note: Design for a width of 320px */
 
     @media only screen and (max-width: 767px) {
-        .container { width: 300px; }
+        .container {
+    padding: 50px 1% 25px !important;
+    width: 98% !important;
+}
         .container .columns,
         .container .column { margin: 0; }
 
