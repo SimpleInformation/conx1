@@ -7,3 +7,4 @@ sites/*/private
 
 # Ignore local environment files
 .htaccess
+sites/all/modules/contrib/stage_file_proxy
