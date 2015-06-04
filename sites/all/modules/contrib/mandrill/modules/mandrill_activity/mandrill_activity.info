@@ -8,11 +8,11 @@ dependencies[] = entity
 
 files[] = lib/mandrill_activity.entity.inc
 files[] = lib/mandrill_activity.ui_controller.inc
+files[] = tests/mandrill_activity.test
 
-
-; Information added by Drupal.org packaging script on 2014-05-09
-version = "7.x-1.6"
+; Information added by Drupal.org packaging script on 2015-01-09
+version = "7.x-2.1"
 core = "7.x"
 project = "mandrill"
-datestamp = "1399658028"
+datestamp = "1420838882"
 
