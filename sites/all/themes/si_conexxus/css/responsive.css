@@ -68,7 +68,7 @@
 }
 
 .menu-icon {
-    background: rgba(0, 0, 0, 0) url("../images/menu.png") no-repeat scroll 0 0 / cover ;
+    background: rgba(0, 0, 0, 0) url("../images/menu.png") no-repeat scroll 0 0;
     display: block;
     float: right;
     height: 41px;
@@ -93,8 +93,9 @@ iframe {
     width: 100%;
 }
 
-.highlight { 
-    line-height: 0;
+.highlight {
+    font-size: 14px;
+    line-height: 20px;
 }
 
 .content > p {
