@@ -93,7 +93,7 @@ function workbench_email_form_node_form_alter(&$form, $form_state) {
       }
     }
 
-    $form['actions']['submit']['#validate'][] = 'workbench_email_notification_validate';
+    $form['#validate'][] = 'workbench_email_notification_validate';
     $form['actions']['submit']['#submit'][] = 'workbench_email_notification_submit';
   }
 }
