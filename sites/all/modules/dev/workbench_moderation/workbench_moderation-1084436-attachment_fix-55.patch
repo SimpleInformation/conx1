@@ -1,0 +1,37 @@
+From 338a92c687e9ad4ade1270fa2c906f2e476b2fb7 Mon Sep 17 00:00:00 2001
+From: recrit <recrit@452914.no-reply.drupal.org>
+Date: Tue, 26 May 2015 12:45:05 -0400
+Subject: [PATCH] Issue #1084436 by recrit, stevector, ti2m, binford2k: doesn't
+ seem to handle file attachments at all
+
+---
+ workbench_moderation.module | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/workbench_moderation.module b/workbench_moderation.module
+index 5a2ff16..53925c7 100644
+--- a/workbench_moderation.module
++++ b/workbench_moderation.module
+@@ -770,8 +770,6 @@ function workbench_moderation_node_update($node) {
+   // Apply moderation changes if this is a new revision or if the moderation
+   // state has changed.
+   if (!empty($node->revision) || $node->workbench_moderation_state_current != $node->workbench_moderation_state_new) {
+-    // Update attached fields.
+-    field_attach_update('node', $node);
+     // Moderate the node.
+     workbench_moderation_moderate($node, $node->workbench_moderation_state_new);
+   }
+@@ -1744,7 +1742,9 @@ function workbench_moderation_store($node) {
+   // make sure that the entry in the {node} table points to the current
+   // revision.
+   if (empty($node->workbench_moderation['current']->unpublishing)) {
+-    $live_revision = workbench_moderation_node_live_load($node);
++    $live_revision_loaded = workbench_moderation_node_live_load($node);
++    $live_revision = clone($live_revision_loaded);
++    $live_revision->original = $live_revision_loaded;
+     $live_revision->status = 1;
+   }
+   else {
+-- 
+1.8.5.2 (Apple Git-48)
+
