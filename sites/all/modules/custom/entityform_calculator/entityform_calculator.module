@@ -79,7 +79,8 @@ function entityform_calculator_field_settings_form($field, $instance, $has_data,
   foreach (field_info_fields() as $field) {
    // if ($field['type'] == 'computed' && $field['module'] == 'computed_field') {
    // JR ignore requirement that the module be computed_field. 
-     if ($field['type'] == 'number_integer') {  
+		// print $field['type']; 
+     if ($field['type'] == 'text') {  
       // Collect fields of type computed_field.
       $calculated_fields_options[$field['field_name']] = $field['field_name'];
       // assign the field values
