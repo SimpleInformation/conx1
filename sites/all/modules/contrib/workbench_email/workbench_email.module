@@ -953,7 +953,7 @@ function workbench_email_get_editors($role, $sections) {
   $section_rids = workbench_email_get_rid_for_section_id($sections);
 
   // Short circuit if the selected sections aren't within the current role.
-  if (!in_array($role->rid, $section_rids)) {
+  if (!empty($section_rids) && !in_array($role->rid, $section_rids)) {
     return $editors;
   }
 
@@ -1075,7 +1075,9 @@ function workbench_email_get_workbench_access_sections($op = 'node', $data = arr
             foreach ($values['workbench_access_fields'] as $field) {
               if (!empty($values[$field][$lang])) {
                 foreach ($values[$field][$lang] as $term) {
-                  $sections[$term['tid']] = $term['tid'];
+                  if (!empty($term['tid'])) {
+                    $sections[$term['tid']] = $term['tid'];
+                  }
                 }
               }
             }
