@@ -59,3 +59,27 @@ table {
 	border-spacing: 0;
 }
 
+.page-compliance-calendar .fc-content {
+    clear: both;
+    margin-bottom: 20px;
+}
+
+.view-compliance .feed-icon img {
+    display: none;
+}
+
+.view-compliance .feed-icon a {
+    background-image: url("../images/download.jpg");
+    display: inline-block;
+    height: 35px;
+    margin-top: 20px;
+    width: 230px;
+}
+.page-compliance-calendar .twelve.columns.main-content {
+    width: 940px;
+}
+
+.fc-event-default, .fc-event-default .fc-event-skin, .fc-event-default .fc-event-time, .fc-event-default a {
+    background-color: #ea8b00;
+    border-color: #ea8b00;
+}
