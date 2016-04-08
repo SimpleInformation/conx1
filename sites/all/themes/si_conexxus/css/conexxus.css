@@ -380,3 +380,19 @@ div#block-views-news-feed-block-1 , #block-views-event-calendar-block-1{
 	.not-front.page-event-calendar .main-content {
 		width:940px;
 	}
+a.colors-node-type-meeting span.fc-event-time {
+  background-color: #e6e6e6;
+  border-color: #ccc;
+  color:#333333;
+  cursor:default;
+}
+a.colors-node-type-meeting {
+  background-color: #e6e6e6;
+  cursor:default;
+  color:#333333;
+  border-color: #ccc;
+}
+a.colors-node-type-meeting .fc-event-title {
+  cursor:default;
+  color:#333333;
+}
