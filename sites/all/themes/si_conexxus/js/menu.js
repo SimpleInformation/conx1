@@ -58,3 +58,21 @@ else if(window.attachEvent) { // win/ie
 		}
 	}
 }
+(function($) {
+  //$('a.colors-node-type-meeting').attr('href',"#");
+  $( document ).ready(function() {
+    $( "a.colors-node-type-meeting" ).each(function( i ) {
+      $(this).attr('href',"#");
+			//$(this).attr('class',"#");
+				//unwrap();
+    });
+  });
+	$( document ).ajaxComplete(function() {
+   $( "a.colors-node-type-meeting" ).each(function( i ) {
+      $(this).attr('href',"#");
+			//$(this).attr('class',"#");
+					//unwrap();
+    });
+	});
+
+})(jQuery);
