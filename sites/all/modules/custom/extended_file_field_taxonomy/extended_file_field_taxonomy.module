@@ -6,7 +6,7 @@
 function extended_file_field_taxonomy_extended_file_field_metadata_types() {
   return array(
     'taxonomy' => array(
-      'title' => t('File Version, Working File Version'),
+      'title' => t('File Version, Working File Version, Work Status, Document Status'),
       'sort' => FALSE,
       'formatter' => 'extended_file_field_taxonomy_render'
     )
@@ -20,7 +20,8 @@ function extended_file_field_taxonomy_render($item, $context) {
 
   $field_name[1] = 'field_version';
   $field_name[2] = 'field_working_group_version';
-
+  $field_name[3] = 'field_work_status';
+  $field_name[4] = 'field_document_status';
 
 
   $terms = array();
