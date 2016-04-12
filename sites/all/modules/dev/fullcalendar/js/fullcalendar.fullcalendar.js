@@ -13,6 +13,9 @@ Drupal.fullcalendar.plugins.fullcalendar = {
 
     var options = {
       eventClick: function (calEvent, jsEvent, view) {
+        if($( this ).hasClass( "colors-node-type-meeting" )) {
+				  return false;
+				}
         if (settings.sameWindow) {
           window.open(calEvent.url, '_self');
         }
