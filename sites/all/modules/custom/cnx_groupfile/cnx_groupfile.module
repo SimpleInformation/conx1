@@ -1,0 +1,53 @@
+<?php
+
+
+/**
+* Implements hook_node_presave()
+*/
+function cnx_groupfile_node_presave($node) {
+  if($node->type == 'group_files') {
+    try{
+      //print_r($node); exit;
+		  if(isset($node->field_group_files['und'][1])) {
+			  $datas = $node->field_group_files['und']; 
+				unset($node->field_group_files['und']);
+				$reversed = array_reverse($datas);	
+				$node->field_group_files['und'] = $reversed;
+			}
+      drupal_flush_all_caches();
+		}
+		 catch(Exception $e) { } 
+  }
+}
+
+/**
+* Implements hook_node_insert()
+*/
+function cnx_groupfile_node_insert($node) {
+  if($node->type == 'group_files') {
+    try{
+      //print_r($node); exit;
+		  /*if(isset($node->field_group_files['und'][1])) {
+			  $datas = $node->field_group_files['und']; 
+				unset($node->field_group_files['und']);
+				$reversed = array_reverse($datas);	
+				$node->field_group_files['und'] = $reversed;
+			}*/
+      drupal_flush_all_caches();
+		}
+		 catch(Exception $e) { } 
+  }
+}
+
+/**
+* Implements hook_node_update()
+*/
+function cnx_groupfile_node_update($node) {
+  if($node->type == 'group_files') { 
+    try{
+			
+      drupal_flush_all_caches();
+		}
+		 catch(Exception $e) { } 
+  }
+}

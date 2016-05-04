@@ -1,0 +1,7 @@
+name = CNX Custom Group File function
+description = Custom Group File functions
+core = 7.X
+
+; Information added 2016-05-04
+version = "7.x-1.0+0-dev"
+core = "7.x"
