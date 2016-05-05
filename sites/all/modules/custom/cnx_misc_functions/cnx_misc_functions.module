@@ -50,3 +50,4 @@ function cnx_misc_functions_preprocess_page(&$variables) {
    }
  }
 }
+
