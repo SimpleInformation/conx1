@@ -4,5 +4,7 @@ jQuery(document).ready(function() {
 });
 
 jQuery( document ).ajaxComplete(function() {
- jQuery('.ui-icon-closethick').trigger('click');
+ if(jQuery('body').hasClass('page-node')) {
+   jQuery('.ui-icon-closethick').trigger('click');
+ }
 });
