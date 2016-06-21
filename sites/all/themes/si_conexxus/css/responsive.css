@@ -167,6 +167,14 @@ caption {
     display: block;
 }
 
+.front .eight.columns.highlight {
+    width: 100%;
+}
+a.cust-button {
+    margin: 10px 0 0 !important;
+    width: 100%;
+}
+
 }
 
 /* TABLETS */
@@ -218,8 +226,7 @@ iframe {
 }
 
 #block-block-2 > div {
-    height: auto;
-    line-height: 0;
+    height: auto; 
     overflow: hidden;
 }
 
@@ -278,7 +285,9 @@ ol, ul {
 hr { 
     clear: both; 
 }
-
+.front .eight.columns.highlight {
+    width: auto;
+}
 .main-content ul {
     list-style-type: disc;
     margin: 0;
