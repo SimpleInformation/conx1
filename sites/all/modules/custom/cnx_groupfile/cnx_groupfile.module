@@ -6,18 +6,20 @@
 */
 function cnx_groupfile_node_presave($node) {
   if($node->type == 'group_files') {
-    try{
-      //print_r($node); exit;
-		  if(isset($node->field_group_files['und'][1])) {
-			  $datas = $node->field_group_files['und']; 
-				unset($node->field_group_files['und']);
-				$reversed = array_reverse($datas);	
-				$node->field_group_files['und'] = $reversed;
-			}
-      drupal_flush_all_caches();
-		}
+	 if($node->is_new) {
+     try{
+       //print_r($node); exit;
+		   if(isset($node->field_group_files['und'][1])) {
+			   $datas = $node->field_group_files['und']; 
+				 unset($node->field_group_files['und']);
+				 $reversed = array_reverse($datas);	
+				 $node->field_group_files['und'] = $reversed;
+			 }
+       //drupal_flush_all_caches();
+		 }
 		 catch(Exception $e) { } 
-  }
+   }
+	} 
 }
 
 /**
@@ -33,7 +35,7 @@ function cnx_groupfile_node_insert($node) {
 				$reversed = array_reverse($datas);	
 				$node->field_group_files['und'] = $reversed;
 			}*/
-      drupal_flush_all_caches();
+     // drupal_flush_all_caches();
 		}
 		 catch(Exception $e) { } 
   }
@@ -46,8 +48,186 @@ function cnx_groupfile_node_update($node) {
   if($node->type == 'group_files') { 
     try{
 			
-      drupal_flush_all_caches();
+      //drupal_flush_all_caches();
 		}
 		 catch(Exception $e) { } 
   }
+}
+function cnx_groupfile_widget_process_multiple($element, &$form_state, $form)  {
+ // print_r($variables);
+  //print 'here2'; exit;
+  $element_children = element_children($element, TRUE);
+  $count = count($element_children);
+  //print $count;
+  foreach ($element_children as $delta => $key) {
+    if ($key != $element['#file_upload_delta']) {
+      $description = _file_field_get_description_from_element($element[$key]);
+      $element[$key]['_weight'] = array(
+        '#type' => 'weight',
+        '#title' => $description ? t('Weight for @title', array('@title' => $description)) : t('Weight for new file'),
+        '#title_display' => 'invisible',
+        '#delta' => $count,
+        '#default_value' => $delta,
+      );
+    }
+    else {
+      // The title needs to be assigned to the upload field so that validation
+      // errors include the correct widget label.
+      $element[$key]['#title'] = $element['#title'];
+      
+      $element[$key]['_weight'] = array(
+        '#type' => 'hidden',
+        '#default_value' => $delta,
+      );
+    }
+  }
+
+  // Add a new wrapper around all the elements for Ajax replacement.
+  $element['#prefix'] = '<div id="' . $element['#id'] . '-ajax-wrapper">';
+  $element['#suffix'] = '</div>';
+
+  return $element;
+}
+
+/**
+ * Implements theme function
+ */
+function theme_cnxprocess_multiples1($variables) {
+  $element = $variables['element'];
+  //print_r($element); exit;
+  // Special ID and classes for draggable tables.
+  $weight_class = $element['#id'] . '-weight';
+  $table_id = $element['#id'] . '-table';
+
+  // Build up a table of applicable fields.
+  $headers = array();
+  $headers[] = t('File information');
+  if ($element['#display_field']) {
+    $headers[] = array(
+      'data' => t('Display'),
+      'class' => array('checkbox'),
+    );
+  }
+  $headers[] = t('Weight');
+  $headers[] = t('Work Status');
+  $headers[] = t('Document Status');
+  $headers[] = t('Updated Date Time Stamps');
+  $headers[] = t('Operations');
+ 
+
+  // Get our list of widgets in order (needed when the form comes back after
+  // preview or failed validation).
+  $widgets = array();
+  foreach (element_children($element) as $key) {
+    $widgets[] = &$element[$key];
+  }
+  usort($widgets, '_field_sort_items_value_helper');
+
+  $rows = array();
+  foreach ($widgets as $key => &$widget) {
+    // Save the uploading row for last.
+    if ($widget['#file'] == FALSE) {
+      $widget['#title'] = $element['#file_upload_title'];
+      $widget['#description'] = $element['#file_upload_description'];
+      continue;
+    }
+
+    // Delay rendering of the buttons, so that they can be rendered later in the
+    // "operations" column.
+    $operations_elements = array();
+    foreach (element_children($widget) as $sub_key) {
+      if (isset($widget[$sub_key]['#type']) && ($widget[$sub_key]['#type'] == 'submit' || $widget[$sub_key]['#type'] == 'link')) {
+        hide($widget[$sub_key]);
+        $operations_elements[] = &$widget[$sub_key];
+      }
+    }
+
+    // Delay rendering of the "Display" option and the weight selector, so that
+    // each can be rendered later in its own column.
+    if ($element['#display_field']) {
+      hide($widget['display']);
+    }
+    hide($widget['_weight']);
+
+    // Render everything else together in a column, without the normal wrappers.
+    $widget['#theme_wrappers'] = array();
+    $information = drupal_render($widget);
+
+    // Render the previously hidden elements, using render() instead of
+    // drupal_render(), to undo the earlier hide().
+    $operations = '';
+    foreach ($operations_elements as $operation_element) {
+      $operations .= render($operation_element);
+    }
+    $display = '';
+    if ($element['#display_field']) {
+      unset($widget['display']['#title']);
+      $display = array(
+        'data' => render($widget['display']),
+        'class' => array('checkbox'),
+      );
+    }
+    $widget['_weight']['#attributes']['class'] = array($weight_class);
+    $weight = render($widget['_weight']);
+		if(isset($widget['#value']['timestamp'])) {
+		  $timestamp = $widget['#value']['timestamp'];
+      $timestamp =format_date($timestamp ,'custom','F j, Y, g:i a');
+		}
+	if(isset($widget['#value']['field_document_status']['und'][0]['tid'])) {
+		  $DocumentStatusid = $widget['#value']['field_document_status']['und'][0]['tid'];
+			$term = taxonomy_term_load($DocumentStatusid);
+			$DocumentStatus = $term->name;
+		}
+	if(isset($widget['#value']['field_work_status']['und'][0]['tid'])) {
+		  $WorkStatusid = $widget['#value']['field_work_status']['und'][0]['tid'];
+			$term = taxonomy_term_load($WorkStatusid);
+			$WorkStatus = $term->name;
+		}
+
+    // Arrange the row with all of the rendered columns.
+    $row = array();
+    $row[] = $information;
+    if ($element['#display_field']) {
+      $row[] = $display;
+    }
+	
+    $row[] = $weight;
+		$row[] = $WorkStatus;
+		$row[] = $DocumentStatus;
+		$row[] = $timestamp;
+    $row[] = $operations;
+    $rows[] = array(
+      'data' => $row,
+      'class' => isset($widget['#attributes']['class']) ? array_merge($widget['#attributes']['class'], array('draggable')) : array('draggable'),
+'Work_status' =>t('need to update'),
+    );
+
+  }
+
+  drupal_add_tabledrag($table_id, 'order', 'sibling', $weight_class);
+
+  $output = '';
+  $output = empty($rows) ? '' : theme('table', array('header' => $headers, 'rows' => $rows, 'attributes' => array('id' => $table_id)));
+  $output .= drupal_render_children($element);
+  return $output;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function cnx_groupfile_theme() {
+  return array(
+    'cnxprocess_multiples1' => array(
+      'render element' => 'element',
+    ), 
+  );
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function cnx_groupfile_field_widget_form_alter(&$element, &$form_state, $context) {
+ if($context['field']['type'] == 'file') {
+   $element['#theme'] = 'cnxprocess_multiples1';
+ }
 }
