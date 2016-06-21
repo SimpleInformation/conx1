@@ -49,7 +49,7 @@ Drupal.behaviors.outline_designer_book = {
   });
   //set the active node id everytime an edit icon is clicked on
   $('.outline_designer_edit_button', context).bind('click',function(e){
-    Drupal.outline_designer.set_active($(this).attr('id'));    
+    Drupal.outline_designer.set_active($(this).attr('id'));
   });
   //whenever you doubleclick on a title, switch it to the rename state
   $("#book-outline span.od_title_span", context).bind('dblclick',function(e){
@@ -74,10 +74,10 @@ Drupal.behaviors.outline_designer_book = {
       if(e.keyCode==13){  // Enter pressed
         Drupal.outline_designer_ops.rename_submit();
         return false;
-      }  
+      }
       if(e.keyCode == 27){  // ESC pressed
         Drupal.outline_designer_ops.active('span').css('display','');
-        Drupal.outline_designer_ops.active('input').val(Drupal.outline_designer_ops.active('span').html());
+        Drupal.outline_designer_ops.active('input').val(Drupal.checkPlain(Drupal.outline_designer_ops.active('span').html()));
         Drupal.outline_designer_ops.active('input').blur();
       }
     });
@@ -103,9 +103,9 @@ Drupal.behaviors.outline_designer_book = {
   }
   //binding isn't working in Opera / IE correctly or at all
     $('.outline_designer_edit_button').contextMenu(Drupal.settings.outline_designer.context_menu, {
-      theme: Drupal.settings.outline_designer.theme, 
-      beforeShow: function () { 
-      if ($.inArray("nid", unavailableContextMenuItems) == -1) { 
+      theme: Drupal.settings.outline_designer.theme,
+      beforeShow: function () {
+      if ($.inArray("nid", unavailableContextMenuItems) == -1) {
         $(this.menu).find('.context-menu-item-inner:first').css('backgroundImage','url(' + $("#node-" + Drupal.settings.outline_designer.activeNid +"-icon").attr('src') +')').empty().append("nid " + Drupal.settings.outline_designer.activeNid);
         }
       },
@@ -174,7 +174,7 @@ Drupal.outline_designer.render_popup = function(render_title) {
 }
 // define function for edit
   Drupal.outline_designer_ops.edit = function() {
-    window.open(Drupal.settings.basePath + '?q=node/' + Drupal.settings.outline_designer.activeNid + '/edit','_blank');
+    window.open(Drupal.settings.basePath + '?q=node/' + Drupal.settings.outline_designer.activeNid + '/edit&destination=' + 'admin/content/book/' + Drupal.settings.outline_designer.rootNid,'_self');
   };
   // define function for view
   Drupal.outline_designer_ops.view = function() {
@@ -225,8 +225,20 @@ Drupal.outline_designer.render_popup = function(render_title) {
       title = title.replace(/%23/g,"@2@3@"); //weird escape for ajax with #
       title = title.replace(/%2B/g,"@2@B@"); //weird escape for ajax with +
       title = title.replace(/%26/g,"@2@6@"); // Fix ampersand issue &
-      Drupal.outline_designer.ajax_call(Drupal.settings.outline_designer.type, 'rename', Drupal.settings.outline_designer.activeNid, title, null);
-    }  
+      title = Drupal.checkPlain(title);
+      Drupal.outline_designer.ajax_call(Drupal.settings.outline_designer.type, 'rename', Drupal.settings.outline_designer.activeNid, title, null, 'Drupal.outline_designer_ops.rename_submit_success');
+    }
+  };
+  // callback function for rename submit
+  Drupal.outline_designer_ops.rename_submit_success = function(msg) {
+    // if message isn't 0 then we were successful
+    if (msg != 0) {
+      msg = jQuery.parseJSON(msg);
+      msg = Drupal.checkPlain(msg);
+      Drupal.outline_designer_ops.active('span').html(msg);
+      Drupal.outline_designer_ops.active('input').val(msg);
+      $("#reload_table").trigger('change');
+    }
   };
   // submit handler for change type
   Drupal.outline_designer_ops.change_type_submit = function() {
@@ -238,9 +250,11 @@ Drupal.outline_designer.render_popup = function(render_title) {
   };
   Drupal.outline_designer_ops.add_content_submit = function() {
     var title = $.param($("#od_add_content_title"));
+    title = Drupal.checkPlain(title); // xss filter, no tags in here
     title = title.replace(/%2F/g,"@2@F@"); //weird escape for ajax with /
     title = title.replace(/%23/g,"@2@3@"); //weird escape for ajax with #
     title = title.replace(/%2B/g,"@2@B@"); //weird escape for ajax with +
+    title = title.replace(/%26/g,"@2@6@"); // Fix ampersand issue &
     title = title.substr(1);
     if (title == "") {
       alert(Drupal.t("You must enter a title in order to add content!"));
@@ -255,14 +269,17 @@ Drupal.outline_designer.render_popup = function(render_title) {
     $("#reload_table").trigger('change');
   };
   Drupal.outline_designer_ops.delete_submit = function() {
-    Drupal.outline_designer.ajax_call(Drupal.settings.outline_designer.type, 'delete', Drupal.settings.outline_designer.activeNid, null, null);
+    var multiple = $('#od_delete_multiple:checked').length;
+    Drupal.outline_designer.ajax_call(Drupal.settings.outline_designer.type, 'delete', Drupal.settings.outline_designer.activeNid, multiple, null);
   };
   // reset handlers
   Drupal.outline_designer_ops.edit_reset = function() {};
   Drupal.outline_designer_ops.view_reset = function() {};
   Drupal.outline_designer_ops.rename_reset = function() {};
   Drupal.outline_designer_ops.change_type_reset = function() {};
-  Drupal.outline_designer_ops.delete_reset = function() {};
+  Drupal.outline_designer_ops.delete_reset = function() {
+    $("#od_delete_multiple").attr("checked", false);
+  };
   Drupal.outline_designer_ops.add_content_reset = function() {
     $("#od_add_content_title").val('');
   };
@@ -277,7 +294,9 @@ Drupal.outline_designer.render_popup = function(render_title) {
   Drupal.behaviors.outlineDesignerAddContentTitle = {
     attach: function (context, settings) {
     $("#od_add_content_title", context).keyup(function(e){
-      $(".popup-statusbar .tmptitle").empty().append($("#od_add_content_title").val());
+      // filter xss
+      var titleval = Drupal.checkPlain($("#od_add_content_title").val());
+      $(".popup-statusbar .tmptitle").empty().append(titleval);
 });
     }
   };
