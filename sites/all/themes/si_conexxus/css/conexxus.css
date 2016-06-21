@@ -166,6 +166,7 @@ span.hilite {
 	font-size: 2.3rem;
 	color: #f18b21;
 }
+a.cust-button,
 .buttons p {
 	background: #f29637; /* Old browsers */
 	background: -moz-linear-gradient(left,  #f29637 0%, #ffca43 100%); /* FF3.6+ */
@@ -395,4 +396,24 @@ a.colors-node-type-meeting {
 a.colors-node-type-meeting .fc-event-title {
   cursor:default;
   color:#333333;
+}
+
+/* New changes*/
+
+.front .eight.columns.highlight {
+    border-top: 4px solid #78787a;
+    width: 940px;
+}
+
+a.cust-button {
+    box-sizing: border-box;
+    display: block;
+    float: left;
+    padding: 10px;
+    text-decoration: none;
+    width: 30%;
+}
+
+a.cust-button:nth-child(2) {
+    margin: 0 5%;
 }
