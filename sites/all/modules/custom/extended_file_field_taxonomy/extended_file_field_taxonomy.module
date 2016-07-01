@@ -27,12 +27,13 @@ function extended_file_field_taxonomy_render($item, $context) {
   $terms = array();
 
  foreach($field_name as $key=>$value){
-         if(isset($item[$value][$context['langcode']])) {
-  foreach ($item[$value][$context['langcode']] as $row) {
-  $terms[] = taxonomy_term_load($row['tid'])->name;
+	 if(isset($item[$value][$context['langcode']])) {
+     foreach ($item[$value][$context['langcode']] as $row) {
+  	   $terms[] = taxonomy_term_load($row['tid'])->name;
      }
-    }
    }
+ }
+
 
   return implode(', ', $terms);
 }
