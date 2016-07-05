@@ -15,7 +15,7 @@ function cnx_groupfile_node_presave($node) {
 				 $reversed = array_reverse($datas);	
 				 $node->field_group_files['und'] = $reversed;
 			 }
-       //drupal_flush_all_caches();
+       drupal_flush_all_caches();
 		 }
 		 catch(Exception $e) { } 
    }
@@ -35,7 +35,7 @@ function cnx_groupfile_node_insert($node) {
 				$reversed = array_reverse($datas);	
 				$node->field_group_files['und'] = $reversed;
 			}*/
-     // drupal_flush_all_caches();
+      drupal_flush_all_caches();
 		}
 		 catch(Exception $e) { } 
   }
