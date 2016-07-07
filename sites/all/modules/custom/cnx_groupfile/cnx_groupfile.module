@@ -8,7 +8,7 @@ function cnx_groupfile_node_presave($node) {
   if($node->type == 'group_files') {
 	 if($node->is_new) {
      try{
-       //print_r($node); exit;
+       //print_r($node->field_group_files); exit;
 		   if(isset($node->field_group_files['und'][1])) {
 			   $datas = $node->field_group_files['und']; 
 				 unset($node->field_group_files['und']);
@@ -48,7 +48,7 @@ function cnx_groupfile_node_update($node) {
   if($node->type == 'group_files') { 
     try{
 			
-      //drupal_flush_all_caches();
+      drupal_flush_all_caches();
 		}
 		 catch(Exception $e) { } 
   }
@@ -231,3 +231,4 @@ function cnx_groupfile_field_widget_form_alter(&$element, &$form_state, $context
    $element['#theme'] = 'cnxprocess_multiples1';
  }
 }
+
