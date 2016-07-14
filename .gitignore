@@ -1,5 +1,6 @@
 # Ignore configuration files that may contain sensitive information.
 sites/*/settings*.php
+sites/*/local.settings.php
 
 # Ignore paths that contain user-generated content.
 sites/*/files
@@ -7,5 +8,6 @@ sites/*/private
 
 # Ignore local environment files
 .htaccess
+sites/all/modules/*/reroute_email
 sites/all/modules/contrib/stage_file_proxy
 sites/all/modules/contrib/environment_indicator
