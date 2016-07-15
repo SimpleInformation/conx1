@@ -8,6 +8,7 @@ sites/*/private
 
 # Ignore local environment files
 .htaccess
+sites/all/modules/*/shield
 sites/all/modules/*/reroute_email
 sites/all/modules/contrib/stage_file_proxy
 sites/all/modules/contrib/environment_indicator
