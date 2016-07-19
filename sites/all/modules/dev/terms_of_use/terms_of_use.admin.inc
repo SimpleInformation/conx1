@@ -50,13 +50,6 @@ function terms_of_use_admin_settings() {
     '#default_value' => variable_get('terms_of_use_checkbox_label', t('I agree with these terms')),
     '#description' => t('Type here something like "I agree with these terms." or "I CERTIFY THAT I AM OVER THE AGE OF 18 YEARS OLD.", without quotes. You can use the token @link to insert a link to the Terms in this label. For example, the label can be: "I agree with the @link.", without quotes. You may want to link to the Terms if you prefer not to show the full text of the Terms in the registration form. If you use the token, the Terms will not be shown.'),
   );
-  
-  $form['terms_of_use_login_requirement'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Add Terms of Use to the User Login form?'),
-    '#description' => t('If checked, users will be required to agree to the Terms of Service before logging in.'),
-    '#default_value' => variable_get('terms_of_use_login_requirement', 0),
-  );
 
   return system_settings_form($form);
 }
