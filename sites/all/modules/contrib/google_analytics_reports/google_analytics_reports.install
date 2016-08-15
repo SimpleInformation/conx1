@@ -13,6 +13,9 @@ function google_analytics_reports_install() {
     ->fields(array('weight' => 11))
     ->condition('name', 'google_analytics_reports', '=')
     ->execute();
+
+  // Import Google Analytics fields.
+  google_analytics_reports_fields_import();
 }
 
 /**
@@ -88,16 +91,9 @@ function google_analytics_reports_requirements($phase) {
   // Ensure translations don't break during installation.
   $t = get_t();
 
-  // Import Google Analytics fields.
-  if ($phase == 'install') {
-    module_load_include('module', 'google_analytics_reports');
-    google_analytics_reports_fields_import();
-  }
-
   // Do not install module if old Google Analytics Reports Views module
   // is exists.
   if (($phase == 'install') || ($phase == 'runtime')) {
-    module_load_include('inc', 'content', 'includes/module');
     if (module_exists('google_analytics_reports_views')) {
       $requirements['google_analytics_reports_views'] = array(
         'title' => $t('Google Analytics Reports'),
@@ -128,6 +124,14 @@ function google_analytics_reports_requirements($phase) {
   return $requirements;
 }
 
+/**
+ * Implements hook_uninstall().
+ */
+function google_analytics_reports_uninstall() {
+  // Delete module variables.
+  variable_del('google_analytics_reports_metadata_etag');
+  variable_del('google_analytics_reports_metadata_last_time');
+}
 
 /**
  * Divide start_end filter into two start_date and end_date filters.
