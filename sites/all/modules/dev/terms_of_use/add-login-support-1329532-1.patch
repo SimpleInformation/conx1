@@ -1,0 +1,111 @@
+From 25a759dfcfcf668f809cddc7722773b84f4d13e7 Mon Sep 17 00:00:00 2001
+From: msepjobs <msepjobs@host9.bluewatermedia.com>
+Date: Mon, 19 Dec 2011 11:26:19 -0500
+Subject: [PATCH] adding login support
+
+---
+ terms_of_use.admin.inc |    7 +++++
+ terms_of_use.module    |   62 ++++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 62 insertions(+), 7 deletions(-)
+
+diff --git a/terms_of_use.admin.inc b/terms_of_use.admin.inc
+index 59ca703..10f549b 100644
+--- a/terms_of_use.admin.inc
++++ b/terms_of_use.admin.inc
+@@ -50,6 +50,13 @@ function terms_of_use_admin_settings() {
+     '#default_value' => variable_get('terms_of_use_checkbox_label', t('I agree with these terms')),
+     '#description' => t('Type here something like "I agree with these terms." or "I CERTIFY THAT I AM OVER THE AGE OF 18 YEARS OLD.", without quotes. You can use the token @link to insert a link to the Terms in this label. For example, the label can be: "I agree with the @link.", without quotes. You may want to link to the Terms if you prefer not to show the full text of the Terms in the registration form. If you use the token, the Terms will not be shown.'),
+   );
++  
++  $form['terms_of_use_login_requirement'] = array(
++    '#type' => 'checkbox',
++    '#title' => t('Add Terms of Use to the User Login form?'),
++    '#description' => t('If checked, users will be required to agree to the Terms of Service before logging in.'),
++    '#default_value' => variable_get('terms_of_use_login_requirement', 0),
++  );
+ 
+   return system_settings_form($form);
+ }
+diff --git a/terms_of_use.module b/terms_of_use.module
+index 2437e3d..4264559 100644
+--- a/terms_of_use.module
++++ b/terms_of_use.module
+@@ -49,6 +49,45 @@ function terms_of_use_form_user_register_form_alter(&$form, $form_state) {
+     return;
+   }
+ 
++  $form = terms_of_use_generate_form($form, $form_state);
++
++  return $form;
++}
++
++/**
++ * Implementation of hook_form_form_id_alter().
++ *
++ * @param array $form
++ * @param array $form_state
++ * @return boolean
++ */
++function terms_of_use_form_alter(&$form, &$form_state, $form_id) {
++  // Check to see if Terms of Use are required for login.
++  $REQUIRE_ON_LOGIN = variable_get('terms_of_use_login_requirement', 0);
++  if (!$REQUIRE_ON_LOGIN) {
++    return;
++  }
++
++  switch ($form_id) {
++    case 'user_login':
++      $form = terms_of_use_generate_form($form, $form_state);
++    break;
++
++    case 'user_login_block':  
++      $form = terms_of_use_generate_form($form, $form_state, TRUE);
++    break;
++  }
++
++  return $form;
++}
++
++/**
++ * @param array $form
++ * @param array $form_state
++ * @return boolean
++ */
++function terms_of_use_generate_form(&$form, $form_state, $LOGIN_BLOCK = FALSE) {
++
+   $fieldset_name = filter_xss(variable_get('terms_of_use_fieldset_name', t('Terms of Use')));
+   $checkbox_label = filter_xss_admin(variable_get('terms_of_use_checkbox_label', t('I agree with these terms')));
+ 
+@@ -85,13 +124,22 @@ function terms_of_use_form_user_register_form_alter(&$form, $form_state) {
+       }
+       // Adding the nodes body by theme_terms_of_use() to the fieldset if desired.
+       if ($show_terms) {
+-        if ($terms = $node->body[$node->language][0]['safe_value']) {
+-          $form['#attached']['css'] = array(
+-            drupal_get_path('module', 'terms_of_use') . '/terms_of_use.css'
+-          );
+-          $form['terms_of_use']['terms_of_use_text'] = array(
+-            '#markup' => theme('terms_of_use', array('terms' => $terms, 'node' => $node)),
+-          );
++        if ($terms = $node->body[$node->language][0]['value']) {
++
++          if (!$LOGIN_BLOCK) {
++            $form['#attached']['css'] = array(
++              drupal_get_path('module', 'terms_of_use') . '/terms_of_use.css'
++            );
++            $form['terms_of_use']['terms_of_use_text'] = array(
++              '#markup' => theme('terms_of_use', array('terms' => $terms, 'node' => $node)),
++            );
++          }
++          // Login block formatting.
++          else {
++            $form['terms_of_use']['terms_of_use_link'] = array(
++              '#markup' => l($fieldset_name, 'node/' . $node->nid),
++            );
++          }
+         }
+         else {
+           watchdog('terms_of_use', 'The body field of the terms of use node was empty. Please check the the nodes content.', array(), WATCHDOG_ALERT, l('Administer terms of use', 'admin/config/people/terms_of_use'));
+-- 
+1.7.3.1
+
