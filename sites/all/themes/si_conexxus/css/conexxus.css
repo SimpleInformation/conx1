@@ -417,3 +417,24 @@ a.cust-button {
 a.cust-button:nth-child(2) {
     margin: 0 5%;
 }
+.node-type-group-files .container .twelve.columns {
+    width: 940px;
+}
+
+.node-group-files .field.field-name-og-group-ref {
+    padding-bottom: 15px;
+}
+.node-group-files .field.field-name-field-group-files {
+    padding-bottom: 15px;
+}
+.node-group-files .field.field-name-field-group-files table {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    box-sizing: border-box;
+    width: 100%;
+}
+.node-group-files .field.field-name-field-group-files table td, .node-group-files .field.field-name-field-group-files table th {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+}
