@@ -438,3 +438,27 @@ a.cust-button:nth-child(2) {
     border-right: 1px solid #ccc;
     padding: 10px;
 }
+
+.block.block-entityform-block.enquiry_form {
+    background: #f1f1f1 none repeat scroll 0 0;
+    margin-top: 8px;
+    padding: 10px;
+}
+.block.block-entityform-block.enquiry_form h2 {
+    color: #78787a;
+    font-size: 1.5em;
+    padding-bottom: 10px;
+}
+.block.block-entityform-block.enquiry_form label {
+    padding-bottom: 5px;
+}
+.block.block-entityform-block.enquiry_form input.form-text {
+    box-sizing: border-box;
+    width: 100%;
+}
+.block.block-entityform-block.enquiry_form textarea {
+    max-height: 50px;
+}
+.block.block-entityform-block.enquiry_form .form-actions {
+    text-align: right;
+}
