@@ -462,3 +462,81 @@ a.cust-button:nth-child(2) {
 .block.block-entityform-block.enquiry_form .form-actions {
     text-align: right;
 }
+.view.view-redhen-follow-up table {
+    width: 100%;
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+.page-redhen-contact .twelve.columns.main-content,
+.page-redhen-follow-up .twelve.columns.main-content,
+.page-node-15746 .twelve.columns.main-content {
+    width: 940px;
+}
+.view.view-redhen-follow-up table td, .view.view-redhen-follow-up table th {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+.view.view-redhen-follow-up table ul {
+    margin: 0;
+}
+.view.view-redhen-follow-up table th {
+    background-color: #f2f2f2;
+}
+.view.view-redhen-follow-up table td.views-field.views-field-link a {
+    margin-right: 10px;
+}
+.redhen-fields-email-formatter-row {
+    overflow: hidden;
+}
+.redhen-fields-email-formatter-row > div {
+    float: left; 
+}
+.redhen-fields-email-formatter-row > div.email-address {
+    padding-right: 20px;
+}
+div#edit-field-join-date,
+div#edit-field-reinstate-date,
+div#edit-field-rejoin-date,
+div#edit-field-follow-up-date {
+    float: left;
+    width: 25%;
+}
+div#edit-field-member-level-gc {
+    clear: left;
+    overflow: hidden;
+}
+div#edit-field-status-und > div,
+div#edit-field-lead-source-und > div,
+div#edit-field-org-type-und > div,
+div#edit-field-store-class-und > div,
+div#edit-field-member-level-gc-und > div {
+    float: left;
+    width: 25%;
+}
+div#edit-field-status-und,
+div#edit-field-lead-source-und,
+div#edit-field-org-type-und,
+div#edit-field-store-class-und,
+div#edit-field-member-level-gc-und {
+    overflow: hidden;
+}
+form#views-exposed-form-redhen-follow-up-page {
+    padding-bottom: 20px;
+}
+form#views-exposed-form-redhen-follow-up-page select.form-select,
+form#views-exposed-form-redhen-follow-up-page input.form-text {
+    padding: 5px;
+}
+form#views-exposed-form-redhen-follow-up-page input.form-submit {
+    margin-top: 28px;
+    padding: 5px 20px;
+    height: 28px;
+    cursor: pointer;
+    display: inline-block;
+    color: #fff;
+    border: 1px solid #F0891D;
+    background-color: #F0891D;
+    font-weight: bold;
+    min-width: 50px;
+}
