@@ -467,8 +467,10 @@ a.cust-button:nth-child(2) {
     border-left: 1px solid #ccc;
     border-top: 1px solid #ccc;
 }
+.page-redhen-search-contacts .twelve.columns.main-content,
 .page-redhen-contact .twelve.columns.main-content,
 .page-redhen-follow-up .twelve.columns.main-content,
+.page-node-15805 .twelve.columns.main-content,
 .page-node-15746 .twelve.columns.main-content {
     width: 940px;
 }
@@ -501,6 +503,10 @@ div#edit-field-rejoin-date,
 div#edit-field-follow-up-date {
     float: left;
     width: 25%;
+    background: #f1f1f1;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid #fff;
 }
 div#edit-field-member-level-gc {
     clear: left;
@@ -512,7 +518,7 @@ div#edit-field-org-type-und > div,
 div#edit-field-store-class-und > div,
 div#edit-field-member-level-gc-und > div {
     float: left;
-    width: 25%;
+    padding-right: 10px;
 }
 div#edit-field-status-und,
 div#edit-field-lead-source-und,
@@ -521,13 +527,17 @@ div#edit-field-store-class-und,
 div#edit-field-member-level-gc-und {
     overflow: hidden;
 }
+form#views-exposed-form-redhen-follow-up-page-1,
 form#views-exposed-form-redhen-follow-up-page {
     padding-bottom: 20px;
 }
+form#views-exposed-form-redhen-follow-up-page-1 select.form-select,
 form#views-exposed-form-redhen-follow-up-page select.form-select,
+form#views-exposed-form-redhen-follow-up-page-1 input.form-text,
 form#views-exposed-form-redhen-follow-up-page input.form-text {
     padding: 5px;
 }
+form#views-exposed-form-redhen-follow-up-page-1 input.form-submit,
 form#views-exposed-form-redhen-follow-up-page input.form-submit {
     margin-top: 28px;
     padding: 5px 20px;
@@ -539,4 +549,43 @@ form#views-exposed-form-redhen-follow-up-page input.form-submit {
     background-color: #F0891D;
     font-weight: bold;
     min-width: 50px;
+}
+table#redhen-contact-email-values {
+    width: 100%;
+}
+div#edit-name > div {
+    width: 30%;
+    float: left;
+    padding-right: 3%;
+}
+div#edit-name {
+    overflow: hidden;
+}
+div#edit-name > div input {
+    width: 100%;
+}
+div#edit-name > div.form-item.form-type-textfield.form-item-middle-name {
+    width: 20%;
+}
+div#redhen-contact-email-add-more-wrapper .tabledrag-toggle-weight-wrapper {
+    display: none;
+}
+div#edit-field-organization,
+div#edit-field-org-nickname {
+    float: left;
+    width: 30%;
+    padding-right: 20px;
+}
+
+div#edit-field-org-type {
+    float: left;
+}
+
+div#edit-field-lead-source {
+    clear: left;
+}
+
+div#edit-field-organization input,
+div#edit-field-org-nickname input{
+    width: 100%;
 }
