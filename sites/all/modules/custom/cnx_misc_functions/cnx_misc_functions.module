@@ -1,9 +1,10 @@
 <?php
+
 /**
 * Custom Print function(Prin only in SR's machine)
 */
 function vp($data, $e = 0){
-	if($_SERVER['REMOTE_ADDR'] == '220.225.213.241' || $_SERVER['REMOTE_ADDR'] == '192.168.1.3'){
+	if($_SERVER['REMOTE_ADDR'] == '220.225.213.241' || $_SERVER['REMOTE_ADDR'] == '192.168.1.3' || $_SERVER['REMOTE_ADDR'] = '202.83.56.238'){
 	//if($data){ 
 		print "<pre>";
 		print_r($data);	
@@ -13,6 +14,226 @@ function vp($data, $e = 0){
 		}
 	}	
 }
+
+/*
+ * Implementation of hook_menu
+ */
+function cnx_misc_functions_menu() {
+
+  $items = array();
+  $items['admin/config/services/conx-setup-uri'] = array(
+     'title' => 'Conx fix files and URI',
+     'description' => 'Conx form to fix files and URI',
+     'page callback' => 'drupal_get_form',
+     'page arguments' => array('conx_setup_uri_settings'),
+     'access arguments' => array('administer Conx URI Settings'),
+     'access callback' => 'conx_setup_uri_access',
+     'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/*
+ * Form access Function
+ */
+function conx_setup_uri_access($account=NULL) {
+  if (user_is_anonymous()) {
+    return FALSE;
+  }
+  return TRUE;
+}
+
+/*
+ * Conx form to fix files and URI
+ */
+function conx_setup_uri_settings() { 
+
+  $form['access']= array(
+    '#type' => 'vertical_tabs',
+    '#type' => 'fieldset',
+    '#title' => t('Conx fix files and URI'),
+    '#tree' => TRUE,
+  );
+  $form['access']['filter'] = array(
+  	'#type' => 'vertical_tabs',
+    '#group' => 'access',
+    '#title' => t('Filter'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#tree' => TRUE,
+  );
+  $form['access']['filter']['Update Form'] = array(
+	    '#type' => 'fieldset',
+	    '#collapsible' => TRUE,
+	    '#group' => 'filter',
+	    '#title' => t('Update Data'),
+	    '#tree' => TRUE,
+  );
+  /*$form['access']['filter']['project']['pathtofile'] = array(
+    '#type'=>'textfield',
+    '#weight' => 1,
+    '#title' => t('Enter path and current name of file'),
+    '#id'=>'path_to_file',
+    '#value' => '',
+    '#default_value'=> '',
+    '#weight' => 1,
+		'#required' => 1,
+  );*/ 
+  $form['access']['filter']['project']['pathandnewname'] = array(
+    '#type'=>'textfield',
+    '#weight' => 1,
+    '#title' => t('Enter path and new name of file'),
+    '#id'=>'path_and_newname',
+    '#value' => '',
+    '#default_value'=> '',
+    '#weight' => 2,
+		'#required' => 1,
+  ); 
+  $form['access']['filter']['project']['enterfid'] = array(
+    '#type'=>'textfield',
+    '#weight' => 1,
+    '#title' => t('Enter FID'),
+    '#id'=>'enter_fid',
+    '#value' => '',
+    '#default_value'=> '',
+    '#weight' => 3,
+		'#required' => 1,
+ 		'#number_type' => 'integer',
+		'#maxlength' => 10,
+		'#size' => 12,
+  ); 
+  $form['access']['filter']['project']['newuri'] = array(
+    '#type'=>'textfield',
+    '#weight' => 1,
+    '#title' => t('Enter new URI for that FID'),
+    '#id'=>'new_fid',
+    '#value' => '',
+    '#default_value'=> '',
+    '#weight' => 4,
+		'#required' => 1,
+  ); 
+  $form['access']['filter']['project']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Save',
+    '#weight' => 101,
+    '#submit' => array('conx_setup_uri_settings_save'),
+  );
+  $form['#validate'][] = 'conx_setup_uri_settings_validate';
+  return $form;
+}
+
+/**
+* Implements form validation
+*/
+function conx_setup_uri_settings_validate($form, &$form_state) {
+ /*if(!$form_state['input']['access']['filter']['project']['pathtofile']) {
+   form_set_error('pathtofile', t('Enter path and current name of file'));
+ }*/
+ if(!$form_state['input']['access']['filter']['project']['pathandnewname']) {
+   form_set_error('pathandnewname', t('Please fill new name of file'));
+ }
+ if(!$form_state['input']['access']['filter']['project']['enterfid']) {
+   form_set_error('enterfid', t('Please fill FID'));
+ }
+ if(!$form_state['input']['access']['filter']['project']['newuri']) {
+   form_set_error('newuri', t('Please fill New URI for that FID'));
+ }
+ if($form_state['input']['access']['filter']['project']['enterfid']) {
+    if (!is_numeric($form_state['input']['access']['filter']['project']['enterfid'])) {
+        form_set_error('enterfid', t('Please enter a valid FID'));
+    }  
+ }
+
+ return $form;
+} 
+
+/**
+* Implements hook_node_access()
+*/
+function conx_setup_uri_settings_save($form, &$form_state) {
+  global $user,$base_url;
+	//vp($form_state['input']['access']['filter']['project'],1);
+	if(isset($form_state['input']['access']['filter']['project'])) {
+	 //$currentfilename = $form_state['input']['access']['filter']['project']['pathtofile'];
+   $filename = $form_state['input']['access']['filter']['project']['pathandnewname'];
+	 $fid = $form_state['input']['access']['filter']['project']['enterfid'];
+	 $uri = $form_state['input']['access']['filter']['project']['newuri'];
+	}
+	try {
+		$save  = variable_get('conx_setup','');
+		if($save && $fid) {
+			$save = $save .'+';
+		}
+	  $save = $save.$fid;
+		$new = variable_set('conx_setup',$save);
+		$realpath = drupal_realpath($uri);
+		$offline = '-offline';
+		//Rename and Save Existing File
+		$result = db_query('SELECT * FROM {file_managed} f WHERE f.uri = :uri', array(':uri' => $uri));
+		$dats = $result->fetchAll();
+		if (count($dats)) {
+			$oldsave  = variable_get('conx_setup_old','');
+			if($oldsave) {
+				$oldsave = $oldsave .'+';
+			}
+			$oldsave = $oldsave.$dats[0]->fid;
+			$new = variable_set('conx_setup_old',$oldsave);
+		  if (file_exists($realpath)) {
+			  rename($realpath, $realpath.$offline);
+        //drupal_set_message($realpath . ' , ' .$realpath.$offline);
+			}
+			if(isset($dats[0]->fid)) {
+		 	 //$fileloadfg = file_load($dats[0]->fid);
+			 $results = db_query('SELECT * FROM {file_managed} f WHERE f.fid = :uri', array(':uri' => $dats[0]->fid));
+			 $datas = $results->fetchAll();
+			 $filefilename = $datas[0]->filename.$offline;
+			 $fileuri = $datas[0]->uri.$offline;
+			 //$newsave = file_save($fileloadfg);
+				$num_updated = db_update('file_managed')
+							->fields(array(
+								'uri' => $fileuri,
+								'filename' => $filefilename,
+							))
+							->condition('fid', $dats[0]->fid , '=')
+							->execute();
+			}
+		}
+	 //Rename and Save New File
+ 	 //$newfile = file_load($fid);
+			 $results1 = db_query('SELECT * FROM {file_managed} f WHERE f.fid = :uri', array(':uri' => $fid));
+			 $datas1 = $results1->fetchAll();
+	 $realpathold = drupal_realpath($datas1[0]->uri);
+	 $realpathnew = drupal_realpath($uri);
+   if (file_exists($realpathold)) {
+	   rename($realpathold, $realpathnew);
+    // drupal_set_message($realpathnew . ' , ' .$realpathnew);
+   }
+	 //$newsave = file_save($newfile);
+			$num_updated = db_update('file_managed')
+							->fields(array(
+								'uri' => $uri,
+								'filename' => $filename,
+							))
+							->condition('fid', $fid , '=')
+							->execute();
+
+
+		/*$num_updated = db_update('file_managed')
+			->fields(array(
+				'uri' => $uri,
+				'filename' => $filename,
+			))
+			->condition('fid', $fid , '=')
+			->execute();
+  	 drupal_set_message(t('Contents are updated.'), 'status');*/
+		 drupal_set_message(t('Contents are updated.'), 'status');
+  }
+	catch (Exception $e) { //vp($e,1); 
+  	 drupal_set_message(t('There is some issues while saving, please check the entered data.'), 'error');
+  }
+	return TRUE;
+}
+
 /**
 * Implements hook_node_access()
 */
