@@ -1,0 +1,19 @@
+name = New Account Helper
+description = Sets useful and configurable defaults for when authorized users create new accounts
+package = Administration
+core = 7.x
+version = 7.x-1.0
+
+dependencies[] = variable
+dependencies[] = user
+
+files[] = new_account_helper.variable.inc
+
+configure = admin/config/people/accounts/defaults
+
+; Information added by Drupal.org packaging script on 2015-10-28
+version = "7.x-1.0"
+core = "7.x"
+project = "new_account_helper"
+datestamp = "1446067442"
+
