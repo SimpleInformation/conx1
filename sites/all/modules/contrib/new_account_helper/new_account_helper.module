@@ -1,0 +1,30 @@
+<?php
+
+require_once 'new_account_helper.variable.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function new_account_helper_menu() {
+
+    $items['admin/config/people/accounts/defaults'] = array(
+        'title' => 'Default Settings',
+        'description' => 'Determine access to features by selecting permissions for roles.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('variable_module_form', 'new_account_helper'),
+        'access arguments' => array('administer permissions'),
+        'type' => MENU_LOCAL_TASK,
+    );
+
+    return $items;
+
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function new_account_helper_form_alter(&$form, $form_state, $form_id) {
+    if (($form_id == 'user_register_form') && user_access('administer users')) {
+        $form['account']['notify']['#default_value'] = variable_get_value(NAH_VARIABLE_NOTIFY_ON_CREATE);
+    }
+}
