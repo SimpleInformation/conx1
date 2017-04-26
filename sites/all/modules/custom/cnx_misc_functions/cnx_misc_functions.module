@@ -40,7 +40,9 @@ function conx_setup_uri_access($account=NULL) {
   if (user_is_anonymous()) {
     return FALSE;
   }
-  return TRUE;
+	if(user_has_role(3)) {
+  	return TRUE;
+	}
 }
 
 /*
